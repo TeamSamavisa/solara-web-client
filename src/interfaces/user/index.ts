@@ -8,6 +8,7 @@ export interface User {
   registration: string;
   email: string;
   role: string;
+  password?: string;
   subjectTeachers?: SubjectTeacher[];
   scheduleTeachers?: ScheduleTeacher[];
   assignments?: Assignment[];
