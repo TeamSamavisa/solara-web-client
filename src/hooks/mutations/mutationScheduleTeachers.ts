@@ -1,12 +1,13 @@
-import type { ScheduleTeacher } from "@/interfaces/schedule-teacher";
-import type { CreateScheduleTeacher } from "@/interfaces/schedule-teacher/create-schedule-teacher";
-import type { UpdateScheduleTeacher } from "@/interfaces/schedule-teacher/update-schedule-teacher";
-import api from "@/lib/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ScheduleTeacher } from '@/interfaces/schedule-teacher';
+import type { CreateScheduleTeacher } from '@/interfaces/schedule-teacher/create-schedule-teacher';
+import type { UpdateScheduleTeacher } from '@/interfaces/schedule-teacher/update-schedule-teacher';
+import api from '@/lib/api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 const createScheduleTeacher = (scheduleTeacher: CreateScheduleTeacher) =>
-  api.post<ScheduleTeacher>("/api/schedule-teacher", scheduleTeacher);
+  api.post<ScheduleTeacher>('/api/schedule-teacher', scheduleTeacher);
 
 export const useCreateScheduleTeacher = () => {
   const queryClient = useQueryClient();
@@ -15,18 +16,18 @@ export const useCreateScheduleTeacher = () => {
     mutationFn: (scheduleTeacher: CreateScheduleTeacher) =>
       createScheduleTeacher(scheduleTeacher),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["schedule-teachers"] });
-      toast.success("Sucesso", {
+      queryClient.invalidateQueries({ queryKey: ['schedule-teachers'] });
+      toast.success('Sucesso', {
         description:
-          "Associação entre professor e horário cadastrada com sucesso",
+          'Associação entre professor e horário cadastrada com sucesso',
       });
     },
     onError: (error: any) => {
       const message =
         error?.response?.data?.message ||
-        "Não foi possível criar a associação entre professor e horário. Tente novamente.";
+        'Não foi possível criar a associação entre professor e horário. Tente novamente.';
 
-      toast.error("Erro", {
+      toast.error('Erro', {
         description: message,
       });
       console.error(error);
@@ -44,22 +45,22 @@ export const useUpdateScheduleTeacher = () => {
     mutationFn: (scheduleTeacher: UpdateScheduleTeacher) =>
       updateScheduleTeacher(scheduleTeacher),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["schedule-teachers"] });
+      queryClient.invalidateQueries({ queryKey: ['schedule-teachers'] });
       queryClient.invalidateQueries({
-        queryKey: ["schedule-teacher", variables.id],
+        queryKey: ['schedule-teacher', variables.id],
       });
 
-      toast.success("Sucesso", {
+      toast.success('Sucesso', {
         description:
-          "Associação entre professor e horário atualizada com sucesso",
+          'Associação entre professor e horário atualizada com sucesso',
       });
     },
     onError: (error: any) => {
       const message =
         error?.response?.data?.message ||
-        "Não foi possível atualizar a associação entre professor e horário. Tente novamente.";
+        'Não foi possível atualizar a associação entre professor e horário. Tente novamente.';
 
-      toast.error("Erro", {
+      toast.error('Erro', {
         description: message,
       });
       console.error(error);
@@ -76,20 +77,20 @@ export const useDeleteScheduleTeacher = () => {
   return useMutation({
     mutationFn: (id: number) => deleteScheduleTeacher(id),
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: ["schedule-teachers"] });
-      queryClient.removeQueries({ queryKey: ["schedule-teacher", id] });
+      queryClient.invalidateQueries({ queryKey: ['schedule-teachers'] });
+      queryClient.removeQueries({ queryKey: ['schedule-teacher', id] });
 
-      toast.success("Sucesso", {
+      toast.success('Sucesso', {
         description:
-          "Associação entre professor e horário excluída com sucesso",
+          'Associação entre professor e horário excluída com sucesso',
       });
     },
     onError: (error: any) => {
       const message =
         error?.response?.data?.message ||
-        "Não foi possível excluir a associação entre professor e horário. Tente novamente.";
+        'Não foi possível excluir a associação entre professor e horário. Tente novamente.';
 
-      toast.error("Erro", {
+      toast.error('Erro', {
         description: message,
       });
       console.error(error);

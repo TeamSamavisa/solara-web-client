@@ -1,12 +1,13 @@
-import type { ClassGroup } from "@/interfaces/class-group";
-import type { CreateClassGroup } from "@/interfaces/class-group/create-class-group";
-import type { UpdateClassGroup } from "@/interfaces/class-group/update-class-group";
-import api from "@/lib/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ClassGroup } from '@/interfaces/class-group';
+import type { CreateClassGroup } from '@/interfaces/class-group/create-class-group';
+import type { UpdateClassGroup } from '@/interfaces/class-group/update-class-group';
+import api from '@/lib/api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 const createClassGroup = (classGroup: CreateClassGroup) =>
-  api.post<ClassGroup>("/api/class-group", classGroup);
+  api.post<ClassGroup>('/api/class-group', classGroup);
 
 export const useCreateClassGroup = () => {
   const queryClient = useQueryClient();
@@ -14,17 +15,17 @@ export const useCreateClassGroup = () => {
   return useMutation({
     mutationFn: (classGroup: CreateClassGroup) => createClassGroup(classGroup),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["class-groups"] });
-      toast.success("Sucesso", {
-        description: "Turma cadastrada com sucesso",
+      queryClient.invalidateQueries({ queryKey: ['class-groups'] });
+      toast.success('Sucesso', {
+        description: 'Turma cadastrada com sucesso',
       });
     },
     onError: (error: any) => {
       const message =
         error?.response?.data?.message ||
-        "Não foi possível criar a turma. Tente novamente.";
+        'Não foi possível criar a turma. Tente novamente.';
 
-      toast.error("Erro", {
+      toast.error('Erro', {
         description: message,
       });
       console.error(error);
@@ -41,21 +42,21 @@ export const useUpdateClassGroup = () => {
   return useMutation({
     mutationFn: (classGroup: UpdateClassGroup) => updateClassGroup(classGroup),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["class-groups"] });
+      queryClient.invalidateQueries({ queryKey: ['class-groups'] });
       queryClient.invalidateQueries({
-        queryKey: ["class-group", variables.id],
+        queryKey: ['class-group', variables.id],
       });
 
-      toast.success("Sucesso", {
-        description: "Turma atualizada com sucesso",
+      toast.success('Sucesso', {
+        description: 'Turma atualizada com sucesso',
       });
     },
     onError: (error: any) => {
       const message =
         error?.response?.data?.message ||
-        "Não foi possível atualizar a turma. Tente novamente.";
+        'Não foi possível atualizar a turma. Tente novamente.';
 
-      toast.error("Erro", {
+      toast.error('Erro', {
         description: message,
       });
       console.error(error);
@@ -71,19 +72,19 @@ export const useDeleteClassGroup = () => {
   return useMutation({
     mutationFn: (id: number) => deleteClassGroup(id),
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: ["class-groups"] });
-      queryClient.removeQueries({ queryKey: ["class-group", id] });
+      queryClient.invalidateQueries({ queryKey: ['class-groups'] });
+      queryClient.removeQueries({ queryKey: ['class-group', id] });
 
-      toast.success("Sucesso", {
-        description: "Turma excluída com sucesso",
+      toast.success('Sucesso', {
+        description: 'Turma excluída com sucesso',
       });
     },
     onError: (error: any) => {
       const message =
         error?.response?.data?.message ||
-        "Não foi possível excluir a turma. Tente novamente.";
+        'Não foi possível excluir a turma. Tente novamente.';
 
-      toast.error("Erro", {
+      toast.error('Erro', {
         description: message,
       });
       console.error(error);

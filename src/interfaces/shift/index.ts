@@ -1,4 +1,4 @@
-import type { ClassGroup } from "../class-group";
+import type { ClassGroup } from '../class-group';
 
 export interface Shift {
   id: number;

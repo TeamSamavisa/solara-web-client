@@ -1,4 +1,4 @@
-import type { BaseQuery } from "../base-query";
+import type { BaseQuery } from '../base-query';
 
 export interface SpaceQuery extends BaseQuery {
   name?: string;

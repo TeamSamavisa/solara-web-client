@@ -1,6 +1,6 @@
-import type { ClassGroup } from "../class-group";
-import type { CourseType } from "../course-type";
-import type { Subject } from "../subject";
+import type { ClassGroup } from '../class-group';
+import type { CourseType } from '../course-type';
+import type { Subject } from '../subject';
 
 export interface Course {
   id: number;

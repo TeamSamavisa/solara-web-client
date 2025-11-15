@@ -1,5 +1,5 @@
-import type { Subject } from "../subject";
-import type { User } from "../user";
+import type { Subject } from '../subject';
+import type { User } from '../user';
 
 export interface SubjectTeacher {
   id: number;

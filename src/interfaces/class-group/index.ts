@@ -1,6 +1,6 @@
-import type { Assignment } from "../assignment";
-import type { Course } from "../course";
-import type { Shift } from "../shift";
+import type { Assignment } from '../assignment';
+import type { Course } from '../course';
+import type { Shift } from '../shift';
 
 export interface ClassGroup {
   id: number;

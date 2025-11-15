@@ -1,7 +1,7 @@
-import type { Assignment } from "../assignment";
-import type { Course } from "../course";
-import type { SpaceType } from "../space-type";
-import type { SubjectTeacher } from "../subject-teacher";
+import type { Assignment } from '../assignment';
+import type { Course } from '../course';
+import type { SpaceType } from '../space-type';
+import type { SubjectTeacher } from '../subject-teacher';
 
 export interface Subject {
   id: number;

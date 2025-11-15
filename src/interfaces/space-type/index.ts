@@ -1,5 +1,5 @@
-import type { Space } from "../space";
-import type { Subject } from "../subject";
+import type { Space } from '../space';
+import type { Subject } from '../subject';
 
 export interface SpaceType {
   id: number;

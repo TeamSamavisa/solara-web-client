@@ -1,5 +1,5 @@
-import type { Assignment } from "../assignment";
-import type { ScheduleTeacher } from "../schedule-teacher";
+import type { Assignment } from '../assignment';
+import type { ScheduleTeacher } from '../schedule-teacher';
 
 export interface Schedule {
   id: number;

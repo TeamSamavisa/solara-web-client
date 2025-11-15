@@ -1,8 +1,8 @@
-import type { ClassGroup } from "../class-group";
-import type { Schedule } from "../schedule";
-import type { Space } from "../space";
-import type { Subject } from "../subject";
-import type { User } from "../user";
+import type { ClassGroup } from '../class-group';
+import type { Schedule } from '../schedule';
+import type { Space } from '../space';
+import type { Subject } from '../subject';
+import type { User } from '../user';
 
 export interface Assignment {
   id: number;

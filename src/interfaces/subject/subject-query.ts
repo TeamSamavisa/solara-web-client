@@ -1,4 +1,4 @@
-import type { BaseQuery } from "../base-query";
+import type { BaseQuery } from '../base-query';
 
 export interface SubjectQuery extends BaseQuery {
   name?: string;

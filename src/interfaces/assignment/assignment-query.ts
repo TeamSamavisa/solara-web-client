@@ -1,4 +1,4 @@
-import type { BaseQuery } from "../base-query";
+import type { BaseQuery } from '../base-query';
 
 export interface AssignmentQuery extends BaseQuery {
   schedule_id?: number;

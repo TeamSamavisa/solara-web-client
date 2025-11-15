@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -6,8 +6,8 @@ const api = axios.create({
   baseURL: apiUrl,
   timeout: 10000,
   headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
   },
 });
 
@@ -27,9 +27,9 @@ const processQueue = (error: unknown, token: string | null = null) => {
 
 // request interceptor
 api.interceptors.request.use(async (config) => {
-  const token = localStorage.getItem("access_token");
+  const token = localStorage.getItem('access_token');
   if (token) {
-    config.headers["Authorization"] = `Bearer ${token}`;
+    config.headers['Authorization'] = `Bearer ${token}`;
   }
   return config;
 });
@@ -40,7 +40,7 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     const isRefreshEndpoint =
-      originalRequest.url?.includes("/api/auth/refresh");
+      originalRequest.url?.includes('/api/auth/refresh');
 
     if (error.response?.status === 401 && isRefreshEndpoint) {
       handleAuthError();
@@ -55,7 +55,7 @@ api.interceptors.response.use(
           return new Promise((resolve, reject) => {
             failedQueue.push({
               resolve: (token: string) => {
-                originalRequest.headers["Authorization"] = `Bearer ${token}`;
+                originalRequest.headers['Authorization'] = `Bearer ${token}`;
                 resolve(api(originalRequest));
               },
               reject: (err: unknown) => reject(err),
@@ -70,9 +70,9 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const refreshToken = localStorage.getItem("refresh_token");
+        const refreshToken = localStorage.getItem('refresh_token');
         if (!refreshToken) {
-          throw new Error("No refresh token available");
+          throw new Error('No refresh token available');
         }
 
         const response = await axios.post(
@@ -80,7 +80,7 @@ api.interceptors.response.use(
           {},
           {
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
               Authorization: `Bearer ${refreshToken}`,
             },
           },
@@ -89,11 +89,11 @@ api.interceptors.response.use(
         const { token: accessToken, refreshToken: newRefreshToken } =
           response.data;
 
-        localStorage.setItem("access_token", accessToken);
-        localStorage.setItem("refresh_token", newRefreshToken);
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('refresh_token', newRefreshToken);
 
         processQueue(null, accessToken);
-        originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
+        originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
         return api(originalRequest);
       } catch (err) {
         processQueue(err, null);
@@ -109,14 +109,14 @@ api.interceptors.response.use(
 );
 
 const handleAuthError = () => {
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
 
   if (
-    !window.location.pathname.startsWith("/error") &&
-    !window.location.pathname.startsWith("/login")
+    !window.location.pathname.startsWith('/error') &&
+    !window.location.pathname.startsWith('/login')
   ) {
-    window.location.href = "/error/401";
+    window.location.href = '/error/401';
   }
 };
 

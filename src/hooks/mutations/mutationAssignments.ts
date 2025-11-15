@@ -1,12 +1,13 @@
-import type { Assignment } from "@/interfaces/assignment";
-import type { CreateAssignment } from "@/interfaces/assignment/create-assignment";
-import type { UpdateAssignment } from "@/interfaces/assignment/update-assignment";
-import api from "@/lib/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Assignment } from '@/interfaces/assignment';
+import type { CreateAssignment } from '@/interfaces/assignment/create-assignment';
+import type { UpdateAssignment } from '@/interfaces/assignment/update-assignment';
+import api from '@/lib/api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 const createAssignment = (assignment: CreateAssignment) =>
-  api.post<Assignment>("/api/assignment", assignment);
+  api.post<Assignment>('/api/assignment', assignment);
 
 export const useCreateAssignment = () => {
   const queryClient = useQueryClient();
@@ -14,17 +15,17 @@ export const useCreateAssignment = () => {
   return useMutation({
     mutationFn: (assignment: CreateAssignment) => createAssignment(assignment),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["assignments"] });
-      toast.success("Sucesso", {
-        description: "Professor(a) cadastrado(a) com sucesso",
+      queryClient.invalidateQueries({ queryKey: ['assignments'] });
+      toast.success('Sucesso', {
+        description: 'Professor(a) cadastrado(a) com sucesso',
       });
     },
     onError: (error: any) => {
       const message =
         error?.response?.data?.message ||
-        "Não foi possível criar a atribuição. Tente novamente.";
+        'Não foi possível criar a atribuição. Tente novamente.';
 
-      toast.error("Erro", {
+      toast.error('Erro', {
         description: message,
       });
       console.error(error);
@@ -41,19 +42,19 @@ export const useUpdateAssignment = () => {
   return useMutation({
     mutationFn: (assignment: UpdateAssignment) => updateAssignment(assignment),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["assignments"] });
-      queryClient.invalidateQueries({ queryKey: ["assignment", variables.id] });
+      queryClient.invalidateQueries({ queryKey: ['assignments'] });
+      queryClient.invalidateQueries({ queryKey: ['assignment', variables.id] });
 
-      toast.success("Sucesso", {
-        description: "Atribuição atualizada com sucesso",
+      toast.success('Sucesso', {
+        description: 'Atribuição atualizada com sucesso',
       });
     },
     onError: (error: any) => {
       const message =
         error?.response?.data?.message ||
-        "Não foi possível atualizar a atribuição. Tente novamente.";
+        'Não foi possível atualizar a atribuição. Tente novamente.';
 
-      toast.error("Erro", {
+      toast.error('Erro', {
         description: message,
       });
       console.error(error);
@@ -69,19 +70,19 @@ export const useDeleteAssignment = () => {
   return useMutation({
     mutationFn: (id: number) => deleteAssignment(id),
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: ["assignments"] });
-      queryClient.removeQueries({ queryKey: ["assignment", id] });
+      queryClient.invalidateQueries({ queryKey: ['assignments'] });
+      queryClient.removeQueries({ queryKey: ['assignment', id] });
 
-      toast.success("Sucesso", {
-        description: "Atribuição excluída com sucesso",
+      toast.success('Sucesso', {
+        description: 'Atribuição excluída com sucesso',
       });
     },
     onError: (error: any) => {
       const message =
         error?.response?.data?.message ||
-        "Não foi possível excluir a atribuição. Tente novamente.";
+        'Não foi possível excluir a atribuição. Tente novamente.';
 
-      toast.error("Erro", {
+      toast.error('Erro', {
         description: message,
       });
       console.error(error);

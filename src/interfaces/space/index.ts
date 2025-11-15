@@ -1,5 +1,5 @@
-import type { Assignment } from "../assignment";
-import type { SpaceType } from "../space-type";
+import type { Assignment } from '../assignment';
+import type { SpaceType } from '../space-type';
 
 export interface Space {
   id: number;

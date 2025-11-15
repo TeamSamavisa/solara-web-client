@@ -1,4 +1,4 @@
-import type { CreateUser } from "./create-user";
+import type { CreateUser } from './create-user';
 
 export interface UpdateUser extends Partial<CreateUser> {
   id: number;
