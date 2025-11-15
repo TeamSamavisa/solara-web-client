@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router';
-import { Home, User, Logout } from '@/assets/icons';
+import { Home, User, Logout, Users } from '@/assets/icons';
 import { useAuth } from '@/contexts/auth';
 import { useRecentActions } from '@/hooks/useRecentActions';
 import { cn } from '@/lib/utils';
@@ -39,7 +39,7 @@ const NavItem = ({ to, label, icon }: NavItemProps) => {
 };
 
 export function SidebarNav() {
-  const { signOut } = useAuth();
+  const { isAdmin, signOut } = useAuth();
 
   return (
     <div className="w-64 h-screen bg-sidebar border-r border-sidebar-border p-4 flex flex-col overflow-y-auto">
@@ -71,6 +71,21 @@ export function SidebarNav() {
           icon={<Home className="size-4" />}
         />
       </nav>
+
+      {isAdmin && (
+        <>
+          <div className="pt-4 pb-2">
+            <p className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Administração
+            </p>
+          </div>
+          <NavItem
+            to="/teachers"
+            label="Professores"
+            icon={<Users className="size-4" />}
+          />
+        </>
+      )}
 
       <div className="mt-auto pt-4 space-y-2">
         <div className="px-3 py-2">

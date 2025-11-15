@@ -2,6 +2,8 @@ import AuthLayout from '@/components/layouts/AuthLayout';
 import ProtectedRoute from '@/components/layouts/ProtectedRoute';
 import Login from '@/pages/auth';
 import Dashboard from '@/pages/authenticated/dashboard';
+import Profile from '@/pages/authenticated/profile';
+import Teachers from '@/pages/authenticated/teachers';
 import Unauthorized from '@/pages/error/401';
 import Forbidden from '@/pages/error/403';
 import NotFound from '@/pages/error/404';
@@ -16,7 +18,11 @@ export function Routes() {
     },
     {
       element: <ProtectedRoute />,
-      children: [{ path: 'dashboard', element: <Dashboard /> }],
+      children: [
+        { path: 'dashboard', element: <Dashboard /> },
+        { path: 'teachers', element: <Teachers /> },
+        { path: 'profile', element: <Profile /> },
+      ],
     },
     {
       path: '*',
