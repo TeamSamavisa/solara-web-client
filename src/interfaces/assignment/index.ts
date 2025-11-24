@@ -11,9 +11,49 @@ export interface Assignment {
   subject_id: number;
   space_id: number;
   class_group_id: number;
-  schedule: Schedule;
-  teacher: User;
-  subject: Subject;
-  space: Space;
-  classGroup: ClassGroup;
+  schedule?: Schedule;
+  teacher?: User;
+  subject?: Subject;
+  space?: Space;
+  classGroup?: ClassGroup;
+  violates_availability?: number | boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  // flatten fields from backend
+  'teacher.id'?: number;
+  'teacher.full_name'?: string;
+  'teacher.email'?: string;
+  'subject.id'?: number;
+  'subject.name'?: string;
+  'schedule.id'?: number;
+  'schedule.weekday'?: string;
+  'schedule.start_time'?: string;
+  'schedule.end_time'?: string;
+  'space.id'?: number;
+  'space.name'?: string;
+  'space.capacity'?: number;
+  'classGroup.id'?: number;
+  'classGroup.name'?: string;
+}
+
+export interface CreateAssignment {
+  schedule_id: number;
+  teacher_id: number;
+  subject_id: number;
+  space_id: number;
+  class_group_id: number;
+}
+
+export interface UpdateAssignment extends Partial<CreateAssignment> {
+  id: number;
+}
+
+export interface AssignmentQuery {
+  page?: number;
+  limit?: number;
+  schedule_id?: number;
+  teacher_id?: number;
+  subject_id?: number;
+  space_id?: number;
+  class_group_id?: number;
 }

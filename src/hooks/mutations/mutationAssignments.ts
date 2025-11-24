@@ -89,3 +89,40 @@ export const useDeleteAssignment = () => {
     },
   });
 };
+
+interface OptimizeResponse {
+  taskId: number;
+  correlationId: string;
+}
+
+const optimizeTimetable = () =>
+  api.post<OptimizeResponse>('/api/timetabling/optimize');
+
+export const useOptimizeTimetable = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: optimizeTimetable,
+    onSuccess: (response) => {
+      // invalidate tasks queries to reflect new optimization task
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['tasks', 'last'] });
+      // force refetch to get the latest data immediately
+      queryClient.refetchQueries({ queryKey: ['tasks', 'last'] });
+      toast.success('Otimização Iniciada', {
+        description: `Tarefa #${response.data.taskId} criada. Acompanhe o progresso.`,
+        duration: 5000,
+      });
+    },
+    onError: (error: any) => {
+      const message =
+        error?.response?.data?.message ||
+        'Não foi possível iniciar a otimização. Tente novamente.';
+
+      toast.error('Erro', {
+        description: message,
+      });
+      console.error(error);
+    },
+  });
+};
