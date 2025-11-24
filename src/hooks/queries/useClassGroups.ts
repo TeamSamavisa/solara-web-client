@@ -1,26 +1,31 @@
 import api from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
-import type { User } from '@/interfaces/user';
-import type { UserQuery } from '@/interfaces/user/user-query';
+import type { ClassGroup } from '@/interfaces/class-group';
 import type { PaginatedResponse } from '@/interfaces/paginated-response';
 
-const fetchUsers = (params?: UserQuery) =>
-  api.get<PaginatedResponse<User>>('/api/user', { params });
+interface ClassGroupQuery {
+  page?: number;
+  limit?: number;
+  name?: string;
+}
 
-export function useUsers(params?: UserQuery) {
+const fetchClassGroups = (params?: ClassGroupQuery) =>
+  api.get<PaginatedResponse<ClassGroup>>('/api/class-group', { params });
+
+export function useClassGroups(params?: ClassGroupQuery) {
   return useQuery({
-    queryKey: ['users', params],
-    queryFn: () => fetchUsers(params),
+    queryKey: ['class-groups', params],
+    queryFn: () => fetchClassGroups(params),
     select: (response) => response.data,
     staleTime: 1000 * 60 * 2,
   });
 }
 
-export function useUserById(id: number | null | undefined) {
+export function useClassGroupById(id: number | null | undefined) {
   return useQuery({
-    queryKey: ['user', id],
+    queryKey: ['class-group', id],
     queryFn: async () => {
-      const { data } = await api.get<User>(`/api/user/${id}`);
+      const { data } = await api.get<ClassGroup>(`/api/class-group/${id}`);
       return data;
     },
     enabled: !!id,
