@@ -69,14 +69,16 @@ export const TeachersPagination: React.FC<TeachersPaginationProps> = ({
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-4 px-2">
       <div className="text-sm text-gray-600 dark:text-muted-foreground">
-        Mostrando <span className="font-medium dark:text-foreground">{startItem}</span> a{' '}
+        Mostrando{' '}
+        <span className="font-medium dark:text-foreground">{startItem}</span> a{' '}
         <span className="font-medium dark:text-foreground">{endItem}</span> de{' '}
-        <span className="font-medium dark:text-foreground">{totalItems}</span> resultados
+        <span className="font-medium dark:text-foreground">{totalItems}</span>{' '}
+        resultados
       </div>
 
       <Pagination>
         <PaginationContent>
-          {/* Botão Primeira Página */}
+          {/* First Page Button */}
           <PaginationItem>
             <Button
               variant="outline"
@@ -91,7 +93,7 @@ export const TeachersPagination: React.FC<TeachersPaginationProps> = ({
             </Button>
           </PaginationItem>
 
-          {/* Botão Anterior */}
+          {/* Previous Button */}
           <PaginationItem>
             <PaginationPrevious
               onClick={(e) => {
@@ -107,7 +109,7 @@ export const TeachersPagination: React.FC<TeachersPaginationProps> = ({
             />
           </PaginationItem>
 
-          {/* Números de Página (desktop) */}
+          {/* Page Numbers (desktop) */}
           <div className="hidden sm:contents">
             {getVisiblePages().map((page, index) =>
               page === 'ellipsis' ? (
@@ -135,14 +137,15 @@ export const TeachersPagination: React.FC<TeachersPaginationProps> = ({
             )}
           </div>
 
-          {/* Indicador Mobile */}
+          {/* Mobile Indicator */}
           <PaginationItem className="sm:hidden">
             <span className="text-sm text-gray-600 dark:text-muted-foreground">
-              Página <span className="dark:text-foreground">{currentPage}</span> de <span className="dark:text-foreground">{totalPages}</span>
+              Página <span className="dark:text-foreground">{currentPage}</span>{' '}
+              de <span className="dark:text-foreground">{totalPages}</span>
             </span>
           </PaginationItem>
 
-          {/* Botão Próxima */}
+          {/* Next Button */}
           <PaginationItem>
             <PaginationNext
               onClick={(e) => {
@@ -158,7 +161,7 @@ export const TeachersPagination: React.FC<TeachersPaginationProps> = ({
             />
           </PaginationItem>
 
-          {/* Botão Última Página */}
+          {/* Last Page Button */}
           <PaginationItem>
             <Button
               variant="outline"
