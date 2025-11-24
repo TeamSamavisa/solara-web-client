@@ -1,9 +1,13 @@
 import AuthLayout from '@/components/layouts/AuthLayout';
 import ProtectedRoute from '@/components/layouts/ProtectedRoute';
+import RoleProtectedRoute from '@/components/layouts/RoleProtectedRoute';
 import Login from '@/pages/auth';
 import Dashboard from '@/pages/authenticated/dashboard';
 import Profile from '@/pages/authenticated/profile';
 import Teachers from '@/pages/authenticated/teachers';
+import Users from '@/pages/authenticated/users';
+import Assignments from '@/pages/authenticated/assignments';
+import AssignmentGenerator from '@/pages/authenticated/assignments/generate';
 import Unauthorized from '@/pages/error/401';
 import Forbidden from '@/pages/error/403';
 import NotFound from '@/pages/error/404';
@@ -19,9 +23,35 @@ export function Routes() {
     {
       element: <ProtectedRoute />,
       children: [
+        // routes accessible to all authenticated users
         { path: 'dashboard', element: <Dashboard /> },
-        { path: 'teachers', element: <Teachers /> },
         { path: 'profile', element: <Profile /> },
+
+        // routes for coordinator and above (coordinator, principal, admin)
+        {
+          element: <RoleProtectedRoute requiredRole="coordinator" />,
+          children: [
+            { path: 'teachers', element: <Teachers /> },
+            { path: 'assignments', element: <Assignments /> },
+          ],
+        },
+
+        // routes to main and above (principal, admin)
+        {
+          element: <RoleProtectedRoute requiredRole="principal" />,
+          children: [
+            {
+              path: 'assignments/generate',
+              element: <AssignmentGenerator />,
+            },
+          ],
+        },
+
+        // routes for admin only
+        {
+          element: <RoleProtectedRoute requiredRole="admin" />,
+          children: [{ path: 'users', element: <Users /> }],
+        },
       ],
     },
     {

@@ -1,7 +1,8 @@
 import { Link, useLocation } from 'react-router';
-import { Home, User, Logout, Users } from '@/assets/icons';
+import { Home, User, Logout, Users, Calendar } from '@/assets/icons';
 import { useAuth } from '@/contexts/auth';
 import { useRecentActions } from '@/hooks/useRecentActions';
+import { useRole } from '@/hooks/useRole';
 import { cn } from '@/lib/utils';
 import solara from '@/assets/images/solara.png';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
@@ -39,7 +40,8 @@ const NavItem = ({ to, label, icon }: NavItemProps) => {
 };
 
 export function SidebarNav() {
-  const { isAdmin, signOut } = useAuth();
+  const { signOut } = useAuth();
+  const { hasRole, isAdmin } = useRole();
 
   return (
     <div className="w-64 h-screen bg-sidebar border-r border-sidebar-border p-4 flex flex-col overflow-y-auto">
@@ -72,18 +74,44 @@ export function SidebarNav() {
         />
       </nav>
 
+      {/* management section - coordinator and above */}
+      {hasRole('coordinator') && (
+        <>
+          <div className="pt-4 pb-2">
+            <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Gestão
+            </p>
+          </div>
+          <nav className="space-y-1">
+            <NavItem
+              to="/teachers"
+              label="Professores"
+              icon={<Users className="size-4" />}
+            />
+            <NavItem
+              to="/assignments"
+              label="Alocações"
+              icon={<Calendar className="size-4" />}
+            />
+          </nav>
+        </>
+      )}
+
+      {/* administration section - admin only */}
       {isAdmin && (
         <>
           <div className="pt-4 pb-2">
-            <p className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Administração
             </p>
           </div>
-          <NavItem
-            to="/teachers"
-            label="Professores"
-            icon={<Users className="size-4" />}
-          />
+          <nav className="space-y-1">
+            <NavItem
+              to="/users"
+              label="Usuários"
+              icon={<Users className="size-4" />}
+            />
+          </nav>
         </>
       )}
 
