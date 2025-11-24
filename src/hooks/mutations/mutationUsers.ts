@@ -13,16 +13,36 @@ export const useCreateUser = () => {
 
   return useMutation({
     mutationFn: (user: CreateUser) => createUser(user),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries({ queryKey: ['teachers'] });
+
+      const roleLabels = {
+        admin: 'Administrador',
+        principal: 'Diretor',
+        coordinator: 'Coordenador',
+        teacher: 'Professor',
+      };
+
+      const roleLabel = roleLabels[variables.role || 'teacher'] || 'Usuário';
+
       toast.success('Sucesso', {
-        description: 'Professor(a) cadastrado(a) com sucesso',
+        description: `${roleLabel} cadastrado com sucesso`,
       });
     },
-    onError: (error: any) => {
+    onError: (error: any, variables) => {
+      const roleLabels = {
+        admin: 'administrador',
+        principal: 'diretor',
+        coordinator: 'coordenador',
+        teacher: 'professor',
+      };
+
+      const roleLabel = roleLabels[variables.role || 'teacher'] || 'usuário';
+
       const message =
         error?.response?.data?.message ||
-        'Não foi possível criar o(a) professor(a). Tente novamente.';
+        `Não foi possível criar o(a) ${roleLabel}. Tente novamente.`;
 
       toast.error('Erro', {
         description: message,
@@ -42,16 +62,35 @@ export const useUpdateUser = () => {
     mutationFn: (user: UpdateUser) => updateUser(user),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries({ queryKey: ['teachers'] });
       queryClient.invalidateQueries({ queryKey: ['user', variables.id] });
 
+      const roleLabels = {
+        admin: 'Administrador',
+        principal: 'Diretor',
+        coordinator: 'Coordenador',
+        teacher: 'Professor',
+      };
+
+      const roleLabel = roleLabels[variables.role || 'teacher'] || 'Usuário';
+
       toast.success('Sucesso', {
-        description: 'Professor(a) atualizado(a) com sucesso',
+        description: `${roleLabel} atualizado com sucesso`,
       });
     },
-    onError: (error: any) => {
+    onError: (error: any, variables) => {
+      const roleLabels = {
+        admin: 'administrador',
+        principal: 'diretor',
+        coordinator: 'coordenador',
+        teacher: 'professor',
+      };
+
+      const roleLabel = roleLabels[variables.role || 'teacher'] || 'usuário';
+
       const message =
         error?.response?.data?.message ||
-        'Não foi possível atualizar o(a) professor(a). Tente novamente.';
+        `Não foi possível atualizar o(a) ${roleLabel}. Tente novamente.`;
 
       toast.error('Erro', {
         description: message,
@@ -70,16 +109,16 @@ export const useDeleteUser = () => {
     mutationFn: (id: number) => deleteUser(id),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries({ queryKey: ['teachers'] });
       queryClient.removeQueries({ queryKey: ['user', id] });
-
       toast.success('Sucesso', {
-        description: 'Professor(a) excluído(a) com sucesso',
+        description: 'Excluído com sucesso',
       });
     },
     onError: (error: any) => {
       const message =
         error?.response?.data?.message ||
-        'Não foi possível excluir o(a) professor(a). Tente novamente.';
+        'Não foi possível excluir o usuário. Tente novamente.';
 
       toast.error('Erro', {
         description: message,

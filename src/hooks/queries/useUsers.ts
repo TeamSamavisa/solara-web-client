@@ -16,6 +16,18 @@ export function useUsers(params?: UserQuery) {
   });
 }
 
+const fetchTeachers = (params?: UserQuery) =>
+  api.get<PaginatedResponse<User>>('/api/user/teachers', { params });
+
+export function useTeachers(params?: UserQuery) {
+  return useQuery({
+    queryKey: ['teachers', params],
+    queryFn: () => fetchTeachers(params),
+    select: (response) => response.data,
+    staleTime: 1000 * 60 * 2,
+  });
+}
+
 export function useUser() {
   return useQuery({
     queryKey: ['user'],
