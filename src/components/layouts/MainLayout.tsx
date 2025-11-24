@@ -39,11 +39,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           backgroundImage: `url(${classroomImage})`,
           filter: `grayscale(100%)`,
         }}
-      />
-      {/* Sobreposição com gradiente */}
+        />
+      {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--solara-800)]/90 to-[var(--solara-950)]/90" />
 
-      {/* Resto dos elementos em um container com z-index maior */}
+      {/* Rest of elements in container with higher z-index */}
       <div className="relative z-10 flex w-full">
         <Button
           variant="ghost"

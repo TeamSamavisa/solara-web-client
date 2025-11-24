@@ -62,7 +62,7 @@ const Login = () => {
   return (
     <div className="min-h-screen w-full flex items-center justify-center">
       <div className="w-full lg:w-full flex flex-col md:flex-row shadow-2xl rounded-lg overflow-hidden">
-        {/* Lado esquerdo com imagem */}
+        {/* Left side with image */}
         <div className="hidden md:block md:w-2/3 relative">
           <div
             className="absolute inset-0 bg-cover bg-center transform hover:scale-105 transition-transform duration-700"
@@ -83,10 +83,10 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Lado direito com formulário */}
+        {/* Right side with form */}
         <div className="w-full lg:w-2/5 md:w-3/5 flex items-center justify-center p-8 bg-card">
           <div className="w-full max-w-md space-y-8">
-            {/* Logo e título para mobile */}
+            {/* Logo and title for mobile */}
             <div className="md:hidden text-center space-y-4 mb-8">
               <div className="flex flex-row items-center justify-center gap-4">
                 <img
@@ -184,7 +184,7 @@ const Login = () => {
               </form>
             </Card>
 
-            {/* Footer com informações adicionais */}
+            {/* Footer with additional information */}
             <div className="text-center text-sm text-gray-500">
               <p>
                 Problemas para acessar?{' '}

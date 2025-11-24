@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Link, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
 export default function Forbidden() {
   const navigate = useNavigate();
@@ -15,9 +15,6 @@ export default function Forbidden() {
       </p>
       <div className="flex gap-4 mt-8">
         <Button onClick={() => navigate(-1)}>Voltar</Button>
-        <Button asChild variant="outline">
-          <Link to="/login">Ir para o Login</Link>
-        </Button>
       </div>
     </div>
   );

@@ -35,7 +35,7 @@ import { TeachersPagination } from '@/components/teachers/TeachersPagination';
 import { TeacherForm } from '@/components/teachers/TeacherForm';
 import { MainLayout } from '@/components/layouts/MainLayout';
 import { useAuth } from '@/contexts/auth';
-import { useUsers } from '@/hooks/queries/useUsers';
+import { useTeachers } from '@/hooks/queries/useUsers';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import {
   useCreateUser,
@@ -63,7 +63,7 @@ const Teachers = () => {
   const [selectedTeacher, setSelectedTeacher] = useState<User | null>(null);
   const [formData, setFormData] = useState<CreateUser>(INITIAL_FORM_DATA);
 
-  // Filtros e paginação
+  // Filters and pagination
   const [filters, setFilters] = useState<UserQuery>({
     page: 1,
     limit: 10,
@@ -72,7 +72,7 @@ const Teachers = () => {
     email: '',
   });
 
-  // Debounce para os filtros
+  // Debounce for filters
   const [debouncedFilters, setDebouncedFilters] = useState<UserQuery>(filters);
 
   useEffect(() => {
@@ -83,8 +83,8 @@ const Teachers = () => {
     return () => clearTimeout(timer);
   }, [filters]);
 
-  // Queries e mutations
-  const { data, isLoading } = useUsers(debouncedFilters);
+  // Queries and mutations
+  const { data, isLoading } = useTeachers(debouncedFilters);
   const createUserMutation = useCreateUser();
   const updateUserMutation = useUpdateUser();
   const deleteUserMutation = useDeleteUser();
@@ -93,7 +93,7 @@ const Teachers = () => {
     setFilters((prev) => ({
       ...prev,
       [name]: value,
-      page: 1, // Reset para primeira página ao filtrar
+      page: 1, // Reset to first page on filter
     }));
   };
 
@@ -125,7 +125,7 @@ const Teachers = () => {
       full_name: teacher.full_name,
       email: teacher.email,
       registration: teacher.registration || '',
-      password: '', // Não preencher senha no edit
+      password: '', // Do not fill in password on edit
     });
     setIsDialogOpen(true);
   };
@@ -143,7 +143,7 @@ const Teachers = () => {
       setIsDeleteDialogOpen(false);
       setSelectedTeacher(null);
     } catch (error) {
-      // Erro já tratado pela mutation
+      // Error already handled by mutation
       console.error(error);
     }
   };
@@ -182,7 +182,7 @@ const Teachers = () => {
           registration: formData.registration || undefined,
         };
 
-        // Só incluir senha se foi informada
+        // Only include password if provided
         if (formData.password && formData.password.trim()) {
           updateData.password = formData.password;
         }
@@ -201,7 +201,7 @@ const Teachers = () => {
 
       handleCloseDialog();
     } catch (error) {
-      // Erro já tratado pelas mutations
+      // Error already handled by mutations
       console.error(error);
     }
   };
@@ -268,7 +268,7 @@ const Teachers = () => {
         </div>
       </div>
 
-      {/* Dialog/Drawer de Formulário Responsivo */}
+      {/* Responsive Form Dialog/Drawer */}
       {isDesktop ? (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-[500px]">
@@ -327,7 +327,7 @@ const Teachers = () => {
         </Drawer>
       )}
 
-      {/* Dialog de Confirmação de Exclusão */}
+      {/* Delete Confirmation Dialog */}
       <AlertDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
