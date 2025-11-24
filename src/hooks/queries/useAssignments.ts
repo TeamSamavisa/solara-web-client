@@ -1,36 +1,26 @@
 import api from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
-import type { User } from '@/interfaces/user';
-import type { UserQuery } from '@/interfaces/user/user-query';
+import type { Assignment } from '@/interfaces/assignment';
+import type { AssignmentQuery } from '@/interfaces/assignment';
 import type { PaginatedResponse } from '@/interfaces/paginated-response';
 
-const fetchUsers = (params?: UserQuery) =>
-  api.get<PaginatedResponse<User>>('/api/user', { params });
+const fetchAssignments = (params?: AssignmentQuery) =>
+  api.get<PaginatedResponse<Assignment>>('/api/assignment', { params });
 
-export function useUsers(params?: UserQuery) {
+export function useAssignments(params?: AssignmentQuery) {
   return useQuery({
-    queryKey: ['users', params],
-    queryFn: () => fetchUsers(params),
+    queryKey: ['assignments', params],
+    queryFn: () => fetchAssignments(params),
     select: (response) => response.data,
     staleTime: 1000 * 60 * 2,
   });
 }
 
-export function useUser() {
+export function useAssignmentById(id: number | null | undefined) {
   return useQuery({
-    queryKey: ['user'],
+    queryKey: ['assignment', id],
     queryFn: async () => {
-      const { data } = await api.get('/api/auth/me');
-      return data;
-    },
-  });
-}
-
-export function useUserById(id: number | null | undefined) {
-  return useQuery({
-    queryKey: ['user', id],
-    queryFn: async () => {
-      const { data } = await api.get<User>(`/api/user/${id}`);
+      const { data } = await api.get<Assignment>(`/api/assignment/${id}`);
       return data;
     },
     enabled: !!id,
