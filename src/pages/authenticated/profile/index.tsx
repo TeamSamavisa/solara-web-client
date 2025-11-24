@@ -14,7 +14,6 @@ import { EyeIcon, EyeOffIcon, UserCog } from 'lucide-react';
 import { useAuth } from '@/contexts/auth';
 import { MainLayout } from '@/components/layouts/MainLayout';
 import { useUpdateUser } from '@/hooks/mutations/mutationUsers';
-import type { User } from '@/interfaces/user';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
@@ -46,7 +45,7 @@ const Profile = () => {
 
     if (!user) return;
 
-    // Validações
+    // Validations
     if (!formData.full_name || !formData.email) {
       toast.error('Campos obrigatórios', {
         description: 'Nome e email são obrigatórios.',
@@ -55,7 +54,7 @@ const Profile = () => {
       return;
     }
 
-    // Validação de email
+    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       toast.error('Email inválido', {
@@ -65,7 +64,7 @@ const Profile = () => {
       return;
     }
 
-    // Validação de senha
+    // Password validation
     if (formData.password && formData.password !== formData.confirmPassword) {
       toast.error('Senhas não conferem', {
         description: 'As senhas informadas não correspondem.',
@@ -75,11 +74,18 @@ const Profile = () => {
     }
 
     try {
-      const updates: Partial<User> = {
+      const updates: {
+        id: number;
+        full_name: string;
+        email: string;
+        role?: 'admin' | 'principal' | 'coordinator' | 'teacher';
+        registration?: string;
+        password?: string;
+      } = {
         id: user.id,
         full_name: formData.full_name,
         email: formData.email,
-        role: user.role,
+        role: user.role as 'admin' | 'principal' | 'coordinator' | 'teacher',
         registration: user.registration,
       };
 
@@ -87,13 +93,13 @@ const Profile = () => {
         updates.password = formData.password;
       }
 
-      await updateUser.mutateAsync(updates as User);
+      await updateUser.mutateAsync(updates);
 
       toast.success('Perfil atualizado', {
         description: 'Suas informações foram atualizadas com sucesso.',
       });
 
-      // Limpa os campos de senha
+      // Clear password fields
       setFormData((prev) => ({
         ...prev,
         password: '',
