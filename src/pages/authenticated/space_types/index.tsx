@@ -28,7 +28,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Return, Calendar } from '@/assets/icons';
+import { Return, Place } from '@/assets/icons';
 import { MainLayout } from '@/components/layouts/MainLayout';
 import { useAuth } from '@/contexts/auth';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -188,7 +188,7 @@ const SpaceTypes = () => {
           </Link>
           <div>
             <h1 className="flex items-center gap-6 text-3xl font-bold text-gray-100 dark:text-gray-50 font-playwrite">
-              <Calendar className="size-8" /> Tipos de Espaços
+              <Place className="size-8" /> Tipos de Espaços
             </h1>
             <p className="text-gray-50 dark:text-gray-300 mt-3">
               Gerenciar tipos de espaços
