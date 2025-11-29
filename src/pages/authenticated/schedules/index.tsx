@@ -28,7 +28,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Return, Calendar } from '@/assets/icons';
+import { Return, Clock } from '@/assets/icons';
 import { MainLayout } from '@/components/layouts/MainLayout';
 import { useAuth } from '@/contexts/auth';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -203,7 +203,7 @@ const Schedules = () => {
           </Link>
           <div>
             <h1 className="flex items-center gap-6 text-3xl font-bold text-gray-100 dark:text-gray-50 font-playwrite">
-              <Calendar className="size-8" /> Horários
+              <Clock className="size-8" /> Horários
             </h1>
             <p className="text-gray-50 dark:text-gray-300 mt-3">
               Gerenciar horários
