@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router';
-import { Home, User, Logout, Users, Calendar } from '@/assets/icons';
+import { Home, User, Logout, Users, Calendar, Clock, Place } from '@/assets/icons';
 import { useAuth } from '@/contexts/auth';
 import { useRecentActions } from '@/hooks/useRecentActions';
 import { useRole } from '@/hooks/useRole';
@@ -96,17 +96,17 @@ export function SidebarNav() {
             <NavItem
               to="/space_types"
               label="Tipos de Espaços"
-              icon={<Calendar className="size-4" />}
+              icon={<Place className="size-4" />}
             />
             <NavItem
               to="/spaces"
               label="Espaços"
-              icon={<Calendar className="size-4" />}
+              icon={<Place className="size-4" />}
             />
             <NavItem
               to="/schedules"
               label="Horários"
-              icon={<Calendar className="size-4" />}
+              icon={<Clock className="size-4" />}
             />
             <NavItem
               to="/assignments"
