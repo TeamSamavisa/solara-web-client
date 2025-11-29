@@ -104,6 +104,11 @@ export function SidebarNav() {
               icon={<Calendar className="size-4" />}
             />
             <NavItem
+              to="/schedules"
+              label="Horários"
+              icon={<Calendar className="size-4" />}
+            />
+            <NavItem
               to="/assignments"
               label="Alocações"
               icon={<Calendar className="size-4" />}
