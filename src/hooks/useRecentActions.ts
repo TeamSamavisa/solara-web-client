@@ -25,8 +25,8 @@ const MAX_RECENT_ACTIONS = 6;
 const STORAGE_KEY = '@solara:recent-actions';
 
 const routeConfig: Record<string, RouteConfig> = {
-  '/timetables': {
-    label: 'Grades Horárias',
+  '/assignments': {
+    label: 'Alocações',
     icon: Calendar,
   },
   '/subjects': {
