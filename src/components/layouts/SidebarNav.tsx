@@ -98,6 +98,11 @@ export function SidebarNav() {
               label="Alocações"
               icon={<Calendar className="size-4" />}
             />
+            <NavItem
+              to="/spaces"
+              label="Espaços"
+              icon={<Calendar className="size-4" />}
+            />
           </nav>
         </>
       )}
