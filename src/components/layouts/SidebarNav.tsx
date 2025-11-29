@@ -89,13 +89,18 @@ export function SidebarNav() {
               icon={<Users className="size-4" />}
             />
             <NavItem
-              to="/assignments"
-              label="Alocações"
+              to="/space_types"
+              label="Tipos de Espaços"
               icon={<Calendar className="size-4" />}
             />
             <NavItem
               to="/spaces"
               label="Espaços"
+              icon={<Calendar className="size-4" />}
+            />
+            <NavItem
+              to="/assignments"
+              label="Alocações"
               icon={<Calendar className="size-4" />}
             />
           </nav>
