@@ -33,6 +33,7 @@ import { TeacherFilters } from '@/components/teachers/TeacherFilters';
 import { TeachersList } from '@/components/teachers/TeachersList';
 import { TeachersPagination } from '@/components/teachers/TeachersPagination';
 import { TeacherForm } from '@/components/teachers/TeacherForm';
+import { TeacherAvailabilityDialog } from '@/components/teachers/TeacherAvailabilityDialog';
 import { MainLayout } from '@/components/layouts/MainLayout';
 import { useAuth } from '@/contexts/auth';
 import { useTeachers } from '@/hooks/queries/useUsers';
@@ -59,6 +60,7 @@ const Teachers = () => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isAvailabilityDialogOpen, setIsAvailabilityDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState<User | null>(null);
   const [formData, setFormData] = useState<CreateUser>(INITIAL_FORM_DATA);
@@ -133,6 +135,11 @@ const Teachers = () => {
   const handleDelete = (teacher: User) => {
     setSelectedTeacher(teacher);
     setIsDeleteDialogOpen(true);
+  };
+
+  const handleViewAvailability = (teacher: User) => {
+    setSelectedTeacher(teacher);
+    setIsAvailabilityDialogOpen(true);
   };
 
   const handleConfirmDelete = async () => {
@@ -246,11 +253,11 @@ const Teachers = () => {
               )}
             </div>
           </div>
-
           <TeachersList
             teachers={data?.content || []}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onViewAvailability={handleViewAvailability}
             isLoading={isLoading}
           />
 
@@ -326,6 +333,17 @@ const Teachers = () => {
           </DrawerContent>
         </Drawer>
       )}
+      {/* Teacher Availability Dialog */}
+      <TeacherAvailabilityDialog
+        teacher={selectedTeacher}
+        isOpen={isAvailabilityDialogOpen}
+        onClose={() => {
+          setIsAvailabilityDialogOpen(false);
+          setSelectedTeacher(null);
+        }}
+        isDesktop={isDesktop}
+        allowEdit={true}
+      />
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog
