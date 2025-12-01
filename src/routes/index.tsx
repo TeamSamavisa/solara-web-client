@@ -7,6 +7,7 @@ import Profile from '@/pages/authenticated/profile';
 import Teachers from '@/pages/authenticated/teachers';
 import Users from '@/pages/authenticated/users';
 import Assignments from '@/pages/authenticated/assignments';
+import Availability from '@/pages/authenticated/availability';
 import Unauthorized from '@/pages/error/401';
 import Forbidden from '@/pages/error/403';
 import NotFound from '@/pages/error/404';
@@ -24,6 +25,7 @@ export function Routes() {
       children: [
         // routes accessible to all authenticated users
         { path: 'dashboard', element: <Dashboard /> },
+        { path: 'availability', element: <Availability /> },
         { path: 'profile', element: <Profile /> },
 
         // routes for coordinator and above (coordinator, principal, admin)
