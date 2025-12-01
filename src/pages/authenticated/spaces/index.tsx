@@ -46,10 +46,10 @@ import { useSpaceTypes } from '@/hooks/queries/useSpaceTypes';
 
 const INITIAL_FORM_DATA: CreateSpace = {
   name: '',
-  floor: '' as any,
-  capacity: '' as any,
+  floor: 0,
+  capacity: 0,
   blocked: false,
-  space_type_id: '' as any,
+  space_type_id: 0,
 };
 
 const Spaces = () => {
