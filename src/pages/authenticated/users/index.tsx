@@ -33,6 +33,7 @@ import { TeacherFilters } from '@/components/teachers/TeacherFilters';
 import { TeachersList } from '@/components/teachers/TeachersList';
 import { TeachersPagination } from '@/components/teachers/TeachersPagination';
 import { TeacherForm } from '@/components/teachers/TeacherForm';
+import { TeacherAvailabilityDialog } from '@/components/teachers/TeacherAvailabilityDialog';
 import { MainLayout } from '@/components/layouts/MainLayout';
 import { useUsers } from '@/hooks/queries/useUsers';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -58,6 +59,7 @@ const UsersPage = () => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isAvailabilityDialogOpen, setIsAvailabilityDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [formData, setFormData] = useState<CreateUser>(INITIAL_FORM_DATA);
@@ -133,6 +135,11 @@ const UsersPage = () => {
   const handleDelete = (user: User) => {
     setSelectedUser(user);
     setIsDeleteDialogOpen(true);
+  };
+
+  const handleViewAvailability = (user: User) => {
+    setSelectedUser(user);
+    setIsAvailabilityDialogOpen(true);
   };
 
   const handleConfirmDelete = async () => {
@@ -262,6 +269,7 @@ const UsersPage = () => {
             teachers={data?.content || []}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onViewAvailability={handleViewAvailability}
             isLoading={isLoading}
           />
 
@@ -340,6 +348,18 @@ const UsersPage = () => {
           </DrawerContent>
         </Drawer>
       )}
+
+      {/* User Availability Dialog */}
+      <TeacherAvailabilityDialog
+        teacher={selectedUser}
+        isOpen={isAvailabilityDialogOpen}
+        onClose={() => {
+          setIsAvailabilityDialogOpen(false);
+          setSelectedUser(null);
+        }}
+        isDesktop={isDesktop}
+        allowEdit={true}
+      />
 
       <AlertDialog
         open={isDeleteDialogOpen}

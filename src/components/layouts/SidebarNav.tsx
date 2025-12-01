@@ -72,6 +72,11 @@ export function SidebarNav() {
           label="Início"
           icon={<Home className="size-4" />}
         />
+        <NavItem
+          to="/availability"
+          label="Disponibilidade"
+          icon={<Calendar className="size-4" />}
+        />
       </nav>
 
       {/* management section - coordinator and above */}
@@ -101,6 +106,11 @@ export function SidebarNav() {
             <NavItem
               to="/assignments"
               label="Alocações"
+              icon={<Calendar className="size-4" />}
+            />
+            <NavItem
+              to="/spaces"
+              label="Espaços"
               icon={<Calendar className="size-4" />}
             />
           </nav>

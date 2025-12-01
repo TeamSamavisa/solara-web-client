@@ -39,7 +39,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           backgroundImage: `url(${classroomImage})`,
           filter: `grayscale(100%)`,
         }}
-        />
+      />
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-[var(--solara-800)]/90 to-[var(--solara-950)]/90" />
 

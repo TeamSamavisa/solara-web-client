@@ -34,6 +34,10 @@ export interface Assignment {
   'space.capacity'?: number;
   'classGroup.id'?: number;
   'classGroup.name'?: string;
+  'classGroup.course.id'?: number;
+  'classGroup.course.name'?: string;
+  'classGroup.shift.id'?: number;
+  'classGroup.shift.name'?: string;
 }
 
 export interface CreateAssignment {

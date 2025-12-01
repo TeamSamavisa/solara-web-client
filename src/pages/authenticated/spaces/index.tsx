@@ -141,7 +141,7 @@ const Spaces = () => {
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
-      [name]: parseInt(value),
+      [name]: name === 'blocked' ? value === 'true' : parseInt(value),
     }));
   };
 
