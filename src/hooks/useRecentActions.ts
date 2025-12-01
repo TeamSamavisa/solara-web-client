@@ -29,6 +29,10 @@ const routeConfig: Record<string, RouteConfig> = {
     label: 'Alocações',
     icon: Calendar,
   },
+  '/availability': {
+    label: 'Disponibilidade',
+    icon: Calendar,
+  },
   '/subjects': {
     label: 'Disciplinas',
     icon: Book,
