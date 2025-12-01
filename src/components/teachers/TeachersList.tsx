@@ -25,6 +25,7 @@ interface TeachersListProps {
   teachers: User[];
   onEdit: (teacher: User) => void;
   onDelete: (teacher: User) => void;
+  onViewAvailability: (teacher: User) => void;
   isLoading: boolean;
 }
 
@@ -32,6 +33,7 @@ export const TeachersList: React.FC<TeachersListProps> = ({
   teachers,
   onEdit,
   onDelete,
+  onViewAvailability,
   isLoading,
 }) => {
   const { user } = useAuth();
@@ -46,6 +48,11 @@ export const TeachersList: React.FC<TeachersListProps> = ({
   const handleDelete = (teacher: User) => {
     setOpenDropdown(null);
     onDelete(teacher);
+  };
+
+  const handleViewAvailability = (teacher: User) => {
+    setOpenDropdown(null);
+    onViewAvailability(teacher);
   };
 
   const getRoleBadgeVariant = (role: string) => {
@@ -89,11 +96,9 @@ export const TeachersList: React.FC<TeachersListProps> = ({
             <TableHead className="dark:text-foreground">Nome</TableHead>
             <TableHead className="dark:text-foreground">Email</TableHead>
             <TableHead className="dark:text-foreground">Função</TableHead>
-            {isAdmin && (
-              <TableHead className="text-right dark:text-foreground">
-                Ações
-              </TableHead>
-            )}
+            <TableHead className="text-right dark:text-foreground">
+              Ações
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -133,46 +138,54 @@ export const TeachersList: React.FC<TeachersListProps> = ({
                   </Badge>
                 </TableCell>
 
-                {isAdmin && (
-                  <TableCell className="text-right">
-                    <DropdownMenu
-                      open={openDropdown === teacher.id}
-                      onOpenChange={(open) =>
-                        setOpenDropdown(open ? teacher.id : null)
-                      }
-                    >
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0 opacity-100 transition-opacity dark:text-foreground dark:hover:bg-accent"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Abrir menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        align="end"
-                        className="dark:bg-popover dark:border-border"
+                <TableCell className="text-right">
+                  <DropdownMenu
+                    open={openDropdown === teacher.id}
+                    onOpenChange={(open) =>
+                      setOpenDropdown(open ? teacher.id : null)
+                    }
+                  >
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 opacity-100 transition-opacity dark:text-foreground dark:hover:bg-accent"
                       >
-                        <DropdownMenuItem
-                          onClick={() => handleEdit(teacher)}
-                          disabled={user?.id === teacher.id}
-                          className="dark:text-popover-foreground dark:hover:bg-accent dark:focus:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          Editar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="text-red-600 dark:text-red-400 dark:hover:bg-accent dark:focus:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
-                          onClick={() => handleDelete(teacher)}
-                          disabled={user?.id === teacher.id}
-                        >
-                          Excluir
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                )}
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Abrir menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      className="dark:bg-popover dark:border-border"
+                    >
+                      <DropdownMenuItem
+                        onClick={() => handleViewAvailability(teacher)}
+                        className="dark:text-popover-foreground dark:hover:bg-accent dark:focus:bg-accent"
+                      >
+                        Ver Disponibilidade
+                      </DropdownMenuItem>
+                      {isAdmin && (
+                        <>
+                          <DropdownMenuItem
+                            onClick={() => handleEdit(teacher)}
+                            disabled={user?.id === teacher.id}
+                            className="dark:text-popover-foreground dark:hover:bg-accent dark:focus:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-red-600 dark:text-red-400 dark:hover:bg-accent dark:focus:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={() => handleDelete(teacher)}
+                            disabled={user?.id === teacher.id}
+                          >
+                            Excluir
+                          </DropdownMenuItem>
+                        </>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
               </TableRow>
             ))
           )}
