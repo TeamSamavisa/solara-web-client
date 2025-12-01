@@ -6,6 +6,7 @@ interface SpaceFiltersProps {
   filters: {
     name?: string;
     floor?: number;
+    spaceTypeName?: string;
   };
   onFilterChange: (name: string, value: string) => void;
 }
@@ -42,6 +43,21 @@ export const SpaceFilters = ({
             placeholder="Buscar por andar/piso..."
             value={filters.floor || ''}
             onChange={(e) => onFilterChange('floor', e.target.value)}
+            className="pl-10 w-full"
+          />
+        </div>
+      </div>
+      <div className="w-full lg:w-64">
+        <Label htmlFor="spaceTypeName" className="mb-2 block">
+          Tipo de Espaço
+        </Label>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            id="spaceTypeName"
+            placeholder="Buscar por tipo de espaço..."
+            value={filters.spaceTypeName || ''}
+            onChange={(e) => onFilterChange('spaceTypeName', e.target.value)}
             className="pl-10 w-full"
           />
         </div>

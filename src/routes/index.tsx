@@ -13,6 +13,7 @@ import Forbidden from '@/pages/error/403';
 import NotFound from '@/pages/error/404';
 import { useRoutes } from 'react-router';
 import Spaces from '@/pages/authenticated/spaces';
+import SpaceTypes from '@/pages/authenticated/space_types';
 
 export function Routes() {
   return useRoutes([
@@ -34,6 +35,8 @@ export function Routes() {
           element: <RoleProtectedRoute requiredRole="coordinator" />,
           children: [
             { path: 'teachers', element: <Teachers /> },
+            { path: 'spaces', element: <Spaces /> },
+            { path: 'space_types', element: <SpaceTypes /> },
             { path: 'assignments', element: <Assignments /> },
             { path: 'spaces', element: <Spaces /> },
           ],
