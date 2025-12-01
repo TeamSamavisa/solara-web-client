@@ -75,11 +75,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         )}
 
         <main
-          className={`max-h-[100vh] flex-1 p-6 overflow-auto transition-all duration-300 ease-in-out ${
+          className={`h-screen flex-1 overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out ${
             isSidebarOpen ? 'md:ml-64' : 'md:ml-0'
           }`}
         >
-          <div className="container mx-auto">
+          <div className="container mx-auto p-6">
             <div className="h-16 md:h-0" />
             {children}
           </div>

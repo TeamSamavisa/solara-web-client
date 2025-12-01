@@ -44,7 +44,7 @@ export function SidebarNav() {
   const { hasRole, isAdmin } = useRole();
 
   return (
-    <div className="w-64 h-screen bg-sidebar border-r border-sidebar-border p-4 flex flex-col overflow-y-auto">
+    <div className="w-64 h-screen bg-sidebar border-r border-sidebar-border p-4 flex flex-col">
       <div className="mb-8">
         <Link
           to="/dashboard"
@@ -66,81 +66,83 @@ export function SidebarNav() {
         </Link>
       </div>
 
-      <nav className="space-y-1">
-        <NavItem
-          to="/dashboard"
-          label="Início"
-          icon={<Home className="size-4" />}
-        />
-        <NavItem
-          to="/availability"
-          label="Disponibilidade"
-          icon={<Calendar className="size-4" />}
-        />
-      </nav>
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <nav className="space-y-1">
+          <NavItem
+            to="/dashboard"
+            label="Início"
+            icon={<Home className="size-4" />}
+          />
+          <NavItem
+            to="/availability"
+            label="Disponibilidade"
+            icon={<Calendar className="size-4" />}
+          />
+        </nav>
 
-      {/* management section - coordinator and above */}
-      {hasRole('coordinator') && (
-        <>
-          <div className="pt-4 pb-2">
-            <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              Gestão
-            </p>
-          </div>
-          <nav className="space-y-1">
-            <NavItem
-              to="/teachers"
-              label="Professores"
-              icon={<Users className="size-4" />}
-            />
-            <NavItem
-              to="/space_types"
-              label="Tipos de Espaços"
-              icon={<Place className="size-4" />}
-            />
-            <NavItem
-              to="/spaces"
-              label="Espaços"
-              icon={<Place className="size-4" />}
-            />
-            <NavItem
-              to="/schedules"
-              label="Horários"
-              icon={<Clock className="size-4" />}
-            />
-            <NavItem
-              to="/assignments"
-              label="Alocações"
-              icon={<Calendar className="size-4" />}
-            />
-            <NavItem
-              to="/spaces"
-              label="Espaços"
-              icon={<Calendar className="size-4" />}
-            />
-          </nav>
-        </>
-      )}
+        {/* management section - coordinator and above */}
+        {hasRole('coordinator') && (
+          <>
+            <div className="pt-4 pb-2">
+              <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Gestão
+              </p>
+            </div>
+            <nav className="space-y-1">
+              <NavItem
+                to="/teachers"
+                label="Professores"
+                icon={<Users className="size-4" />}
+              />
+              <NavItem
+                to="/space_types"
+                label="Tipos de Espaços"
+                icon={<Place className="size-4" />}
+              />
+              <NavItem
+                to="/spaces"
+                label="Espaços"
+                icon={<Place className="size-4" />}
+              />
+              <NavItem
+                to="/schedules"
+                label="Horários"
+                icon={<Clock className="size-4" />}
+              />
+              <NavItem
+                to="/assignments"
+                label="Alocações"
+                icon={<Calendar className="size-4" />}
+              />
+              <NavItem
+                to="/spaces"
+                label="Espaços"
+                icon={<Calendar className="size-4" />}
+              />
+            </nav>
+          </>
+        )}
 
-      {/* administration section - admin only */}
-      {isAdmin && (
-        <>
-          <div className="pt-4 pb-2">
-            <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              Administração
-            </p>
-          </div>
-          <nav className="space-y-1">
-            <NavItem
-              to="/users"
-              label="Usuários"
-              icon={<Users className="size-4" />}
-            />
-          </nav>
-        </>
-      )}
+        {/* administration section - admin only */}
+        {isAdmin && (
+          <>
+            <div className="pt-4 pb-2">
+              <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Administração
+              </p>
+            </div>
+            <nav className="space-y-1">
+              <NavItem
+                to="/users"
+                label="Usuários"
+                icon={<Users className="size-4" />}
+              />
+            </nav>
+          </>
+        )}
+      </div>
 
-      <div className="mt-auto pt-4 space-y-2">
+      <div className="flex-shrink-0 pt-4 space-y-2 border-t border-sidebar-border mt-4">
         <div className="px-3 py-2">
           <ThemeToggle />
         </div>
