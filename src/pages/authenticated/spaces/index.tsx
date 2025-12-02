@@ -48,8 +48,8 @@ const INITIAL_FORM_DATA: CreateSpace = {
   name: '',
   floor: 0,
   capacity: 0,
-  blocked: false,
-  space_type_id: 0,
+  blocked: null,
+  space_type_id: null,
 };
 
 const Spaces = () => {
@@ -96,7 +96,7 @@ const Spaces = () => {
 
       return {
         ...prev,
-        [name]: (name === 'floor' || name === 'space_type_id')
+        [name]: (name === 'floor')
           ? Number(value)
           : value,
         page: 1,
@@ -195,7 +195,14 @@ const Spaces = () => {
       return;
     }
 
-    if (!formData.space_type_id) {
+    if (formData.blocked === null) {
+      toast.error('Erro', {
+        description: 'Bloqueado é obrigatório',
+      });
+      return;
+    }
+
+    if (formData.space_type_id === null) {
       toast.error('Erro', {
         description: 'O tipo de espaço é obrigatório',
       });
