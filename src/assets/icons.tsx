@@ -28,6 +28,7 @@ import { MdAssignment } from 'react-icons/md';
 import { IoLogOutSharp } from 'react-icons/io5';
 import { IoCalendar } from 'react-icons/io5';
 import { FaCircleExclamation } from 'react-icons/fa6';
+import { SiGoogleclassroom } from "react-icons/si";
 
 import {
   Check as CheckIcon,
@@ -72,6 +73,7 @@ export {
   TbDotsVertical as VDots,
   FaSave as Save,
   FaCircleExclamation as Exclamation,
+  SiGoogleclassroom as ClassGroupIcon,
   CheckIcon as Check,
   ClipboardListIcon as ClipboardList,
   XIcon as X,

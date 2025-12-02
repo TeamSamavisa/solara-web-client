@@ -3,6 +3,6 @@ export interface CreateClassGroup {
   semester: string;
   module: string;
   student_count: number;
-  shift_id: number;
-  course_id: number;
+  shift_id: number | null;
+  course_id: number | null;
 }

@@ -15,6 +15,7 @@ import { useRoutes } from 'react-router';
 import Spaces from '@/pages/authenticated/spaces';
 import SpaceTypes from '@/pages/authenticated/space_types';
 import Schedules from '@/pages/authenticated/schedules';
+import ClassGroups from '@/pages/authenticated/class_groups';
 
 export function Routes() {
   return useRoutes([
@@ -40,7 +41,7 @@ export function Routes() {
             { path: 'space_types', element: <SpaceTypes /> },
             { path: 'schedules', element: <Schedules /> },
             { path: 'assignments', element: <Assignments /> },
-            { path: 'spaces', element: <Spaces /> },
+            { path: 'class_groups', element: <ClassGroups /> },
           ],
         },
 
