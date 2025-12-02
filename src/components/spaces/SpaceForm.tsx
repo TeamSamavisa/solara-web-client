@@ -16,10 +16,10 @@ interface SpaceFormProps {
   isEditMode: boolean;
   formData: {
     name: string;
-    floor: number | string;
-    capacity: number | string;
-    blocked: boolean;
-    space_type_id: number | string;
+    floor: number;
+    capacity: number;
+    blocked: boolean | null;
+    space_type_id: number | null;
   };
   space_types: SpaceType[];
   onSubmit: (e: React.FormEvent) => void;
@@ -93,7 +93,7 @@ export const SpaceForm: React.FC<SpaceFormProps> = ({
       <div className="grid gap-2">
         <Label htmlFor="blocked">Bloqueado? *</Label>
         <Select
-          value={formData.blocked === false && !isEditMode ? '' : (formData.blocked ? 'true' : 'false')}
+          value={formData.blocked === null ? '' : (formData.blocked ? 'true' : 'false')}
           onValueChange={(value) => onSelectChange('blocked', value)}
         >
           <SelectTrigger>
