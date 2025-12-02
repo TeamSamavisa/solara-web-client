@@ -17,7 +17,7 @@ import { Button } from '../ui/button';
 import { MoreHorizontal } from 'lucide-react';
 import { useRole } from '@/hooks/useRole';
 import type { ClassGroup } from '@/interfaces/class-group';
-import { ClassGroupSkeletonRows } from './ClassGroupSkeletonrows';
+import { ClassGroupSkeletonRows } from './ClassGroupSkeletonRows';
 
 interface ClassGroupListProps {
   class_groups: ClassGroup[];
