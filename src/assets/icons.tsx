@@ -27,6 +27,7 @@ import { MdAssignment } from 'react-icons/md';
 import { IoLogOutSharp } from 'react-icons/io5';
 import { IoCalendar } from 'react-icons/io5';
 import { FaCircleExclamation } from 'react-icons/fa6';
+import { FaGraduationCap } from "react-icons/fa6";
 
 import {
   Check as CheckIcon,
@@ -42,6 +43,7 @@ import {
 } from 'lucide-react';
 
 export {
+  FaGraduationCap as GraduationCap,
   IoLogOutSharp as Logout,
   MdAssignment as Assignment,
   FaBook as Book,

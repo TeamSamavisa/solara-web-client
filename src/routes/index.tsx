@@ -12,6 +12,8 @@ import Unauthorized from '@/pages/error/401';
 import Forbidden from '@/pages/error/403';
 import NotFound from '@/pages/error/404';
 import { useRoutes } from 'react-router';
+import CourseTypes from '@/pages/authenticated/course-types';
+import Courses from '@/pages/authenticated/courses';
 
 export function Routes() {
   return useRoutes([
@@ -33,6 +35,8 @@ export function Routes() {
           children: [
             { path: 'teachers', element: <Teachers /> },
             { path: 'assignments', element: <Assignments /> },
+            { path: 'course-types', element: <CourseTypes /> },
+            { path: 'courses', element: <Courses /> },
           ],
         },
 
