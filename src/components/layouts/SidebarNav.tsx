@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router';
-import { Home, User, Logout, Users, Calendar, Clock, Place, ClassGroupIcon } from '@/assets/icons';
+import { Home, User, Logout, Users, Calendar, Book, Clock, Place, ClassGroupIcon } from '@/assets/icons';
 import { useAuth } from '@/contexts/auth';
 import { useRecentActions } from '@/hooks/useRecentActions';
 import { useRole } from '@/hooks/useRole';
@@ -122,6 +122,11 @@ export function SidebarNav() {
                 to="/course-types"
                 label="Tipos de Cursos"
                 icon={<Book className="size-4" />}
+              />
+              <NavItem
+                to="/courses"
+                label="Cursos"
+                icon={<GraduationCap className="size-4" />}
               />
             </nav>
           </>
