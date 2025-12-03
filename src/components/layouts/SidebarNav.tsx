@@ -79,7 +79,6 @@ export function SidebarNav() {
             icon={<Calendar className="size-4" />}
           />
         </nav>
-
         {/* management section - coordinator and above */}
         {hasRole('coordinator') && (
           <>
@@ -119,10 +118,14 @@ export function SidebarNav() {
                 label="Alocações"
                 icon={<Calendar className="size-4" />}
               />
+              <NavItem
+                to="/course-types"
+                label="Tipos de Cursos"
+                icon={<Book className="size-4" />}
+              />
             </nav>
           </>
         )}
-
         {/* administration section - admin only */}
         {isAdmin && (
           <>

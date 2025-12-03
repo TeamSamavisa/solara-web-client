@@ -12,6 +12,7 @@ import Unauthorized from '@/pages/error/401';
 import Forbidden from '@/pages/error/403';
 import NotFound from '@/pages/error/404';
 import { useRoutes } from 'react-router';
+import CourseTypes from '@/pages/authenticated/course-types';
 import Spaces from '@/pages/authenticated/spaces';
 import SpaceTypes from '@/pages/authenticated/space_types';
 import Schedules from '@/pages/authenticated/schedules';
@@ -41,6 +42,7 @@ export function Routes() {
             { path: 'space_types', element: <SpaceTypes /> },
             { path: 'schedules', element: <Schedules /> },
             { path: 'assignments', element: <Assignments /> },
+            { path: 'course-types', element: <CourseTypes /> },
             { path: 'class_groups', element: <ClassGroups /> },
           ],
         },
