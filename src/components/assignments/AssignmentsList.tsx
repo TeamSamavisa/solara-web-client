@@ -30,7 +30,7 @@ import {
 import { MoreHorizontal, AlertTriangle } from 'lucide-react';
 import { useRole } from '@/hooks/useRole';
 import type { Assignment } from '@/interfaces/assignment';
-import { AssignmentSkeletonRows } from '../skeletons/AssignmentSkeletonRows';
+import { AssignmentSkeletonRows } from './AssignmentSkeletonRows';
 import { useState, useEffect } from 'react';
 
 const translateWeekDay = (weekday: string) => {

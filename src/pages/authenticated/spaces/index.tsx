@@ -28,53 +28,47 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Return, Users } from '@/assets/icons';
-import { TeacherFilters } from '@/components/teachers/TeacherFilters';
-import { TeachersList } from '@/components/teachers/TeachersList';
-import { TeachersPagination } from '@/components/teachers/TeachersPagination';
-import { TeacherForm } from '@/components/teachers/TeacherForm';
-import { TeacherAvailabilityDialog } from '@/components/teachers/TeacherAvailabilityDialog';
+import { Return, Place } from '@/assets/icons';
 import { MainLayout } from '@/components/layouts/MainLayout';
-import { useUsers } from '@/hooks/queries/useUsers';
+import { useAuth } from '@/contexts/auth';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import {
-  useCreateUser,
-  useUpdateUser,
-  useDeleteUser,
-} from '@/hooks/mutations/mutationUsers';
-import type { User } from '@/interfaces/user';
-import type { CreateUser } from '@/interfaces/user/create-user';
-import type { UpdateUser } from '@/interfaces/user/update-user';
-import type { UserQuery } from '@/interfaces/user/user-query';
+import type { CreateSpace } from '@/interfaces/space/create-space';
+import type { Space } from '@/interfaces/space';
+import type { SpaceQuery } from '@/interfaces/space/space-query';
+import { useSpaces } from '@/hooks/queries/useSpaces';
+import { useCreateSpace, useDeleteSpace, useUpdateSpace } from '@/hooks/mutations/mutationSpaces';
+import type { UpdateSpace } from '@/interfaces/space/update-space';
+import { SpaceFilters } from '@/components/spaces/SpaceFilters';
+import { SpaceList } from '@/components/spaces/SpacesList';
+import { SpacesPagination } from '@/components/spaces/SpacesPagination';
+import { SpaceForm } from '@/components/spaces/SpaceForm';
+import { useSpaceTypes } from '@/hooks/queries/useSpaceTypes';
 
-const INITIAL_FORM_DATA: CreateUser = {
-  full_name: '',
-  email: '',
-  password: '',
-  registration: '',
-  role: 'teacher',
+const INITIAL_FORM_DATA: CreateSpace = {
+  name: '',
+  floor: 0,
+  capacity: 0,
+  blocked: null,
+  space_type_id: null,
 };
 
-const UsersPage = () => {
+const Spaces = () => {
+  const { isAdmin } = useAuth();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isAvailabilityDialogOpen, setIsAvailabilityDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [formData, setFormData] = useState<CreateUser>(INITIAL_FORM_DATA);
+  const [selectedSpace, setSelectedSpace] = useState<Space | null>(null);
+  const [formData, setFormData] = useState<CreateSpace>(INITIAL_FORM_DATA);
 
   // Filters and pagination
-  const [filters, setFilters] = useState<UserQuery>({
+  const [filters, setFilters] = useState<SpaceQuery>({
     page: 1,
     limit: 10,
-    full_name: '',
-    registration: '',
-    email: '',
   });
 
   // Debounce for filters
-  const [debouncedFilters, setDebouncedFilters] = useState<UserQuery>(filters);
+  const [debouncedFilters, setDebouncedFilters] = useState<SpaceQuery>(filters);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -85,17 +79,29 @@ const UsersPage = () => {
   }, [filters]);
 
   // Queries and mutations
-  const { data, isLoading } = useUsers(debouncedFilters);
-  const createUserMutation = useCreateUser();
-  const updateUserMutation = useUpdateUser();
-  const deleteUserMutation = useDeleteUser();
+  const { data, isLoading } = useSpaces(debouncedFilters);
+  const { data: spaceTypesData } = useSpaceTypes({ limit: 10 });
+  const createSpaceMutation = useCreateSpace();
+  const updateSpaceMutation = useUpdateSpace();
+  const deleteSpaceMutation = useDeleteSpace();
 
   const handleFilterChange = (name: string, value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      [name]: value,
-      page: 1,
-    }));
+    setFilters((prev) => {
+
+      if (value === '' || value === '0') {
+        const newFilters = { ...prev };
+        delete newFilters[name as keyof SpaceQuery];
+        return { ...newFilters, page: 1 };
+      }
+
+      return {
+        ...prev,
+        [name]: (name === 'floor')
+          ? Number(value)
+          : value,
+        page: 1,
+      };
+    });
   };
 
   const handlePageChange = (page: number) => {
@@ -108,7 +114,7 @@ const UsersPage = () => {
   const handleOpenDialog = () => {
     setIsEditMode(false);
     setFormData(INITIAL_FORM_DATA);
-    setSelectedUser(null);
+    setSelectedSpace(null);
     setIsDialogOpen(true);
   };
 
@@ -116,40 +122,43 @@ const UsersPage = () => {
     setIsDialogOpen(false);
     setIsEditMode(false);
     setFormData(INITIAL_FORM_DATA);
-    setSelectedUser(null);
+    setSelectedSpace(null);
   };
 
-  const handleEdit = (user: User) => {
+  const handleEdit = (space: Space) => {
     setIsEditMode(true);
-    setSelectedUser(user);
+    setSelectedSpace(space);
     setFormData({
-      full_name: user.full_name,
-      email: user.email,
-      registration: user.registration || '',
-      password: '',
-      role: user.role as 'admin' | 'principal' | 'coordinator' | 'teacher',
+      name: space.name,
+      floor: space.floor,
+      capacity: space.capacity,
+      blocked: space.blocked,
+      space_type_id: space.space_type_id,
     });
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (user: User) => {
-    setSelectedUser(user);
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === 'blocked' ? value === 'true' : parseInt(value),
+    }));
+  };
+
+  const handleDelete = (space: Space) => {
+    setSelectedSpace(space);
     setIsDeleteDialogOpen(true);
   };
 
-  const handleViewAvailability = (user: User) => {
-    setSelectedUser(user);
-    setIsAvailabilityDialogOpen(true);
-  };
-
   const handleConfirmDelete = async () => {
-    if (!selectedUser) return;
+    if (!selectedSpace) return;
 
     try {
-      await deleteUserMutation.mutateAsync(selectedUser.id);
+      await deleteSpaceMutation.mutateAsync(selectedSpace.id);
       setIsDeleteDialogOpen(false);
-      setSelectedUser(null);
+      setSelectedSpace(null);
     } catch (error) {
+      // Error already handled by mutation
       console.error(error);
     }
   };
@@ -158,79 +167,84 @@ const UsersPage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleRoleChange = (value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      role: value as 'admin' | 'principal' | 'coordinator' | 'teacher',
+      [name]: value === '' ? '' : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.full_name.trim() || !formData.email.trim()) {
+    if (!formData.name.trim()) {
       toast.error('Erro', {
-        description: 'Nome e email são obrigatórios',
+        description: 'O nome é obrigatório',
+      });
+      return;
+    }
+
+    if (formData.floor === null) {
+      toast.error('Erro', {
+        description: 'O andar/piso é obrigatório',
+      });
+      return;
+    }
+
+    if (formData.capacity === null) {
+      toast.error('Erro', {
+        description: 'A capacidade é obrigatória',
+      });
+      return;
+    }
+
+    if (formData.blocked === null) {
+      toast.error('Erro', {
+        description: 'Bloqueado é obrigatório',
+      });
+      return;
+    }
+
+    if (formData.space_type_id === null) {
+      toast.error('Erro', {
+        description: 'O tipo de espaço é obrigatório',
       });
       return;
     }
 
     try {
-      if (isEditMode && selectedUser) {
-        const updateData: UpdateUser = {
-          id: selectedUser.id,
-          full_name: formData.full_name,
-          email: formData.email,
-          registration: formData.registration || undefined,
-          role: formData.role,
+      if (isEditMode && selectedSpace) {
+        const updateData: UpdateSpace = {
+          id: selectedSpace.id,
+          name: formData.name,
+          floor: Number(formData.floor),
+          capacity: Number(formData.capacity),
+          blocked: Boolean(formData.blocked),
+          space_type_id: Number(formData.space_type_id)
         };
 
-        if (formData.password && formData.password.trim()) {
-          updateData.password = formData.password;
-        }
-
-        await updateUserMutation.mutateAsync(updateData);
+        await updateSpaceMutation.mutateAsync(updateData);
       } else {
-        const createData: CreateUser = {
-          full_name: formData.full_name,
-          email: formData.email,
-          password: formData.password || undefined,
-          registration: formData.registration || undefined,
-          role: formData.role || 'teacher',
+        const createData: CreateSpace = {
+          name: formData.name,
+          floor: Number(formData.floor),
+          capacity: Number(formData.capacity),
+          blocked: Boolean(formData.blocked),
+          space_type_id: Number(formData.space_type_id)
         };
 
-        const result = await createUserMutation.mutateAsync(createData);
-
-        // Show temporary password if generated
-        if (
-          result &&
-          typeof result === 'object' &&
-          'temporaryPassword' in result
-        ) {
-          const tempPassword = (result as { temporaryPassword: string })
-            .temporaryPassword;
-          toast.info('Senha temporária gerada', {
-            description: `Senha: ${tempPassword}`,
-            duration: 10000,
-          });
-        }
+        await createSpaceMutation.mutateAsync(createData);
       }
 
       handleCloseDialog();
     } catch (error) {
+      // Error already handled by mutations
       console.error(error);
     }
   };
 
   const isSubmitting =
-    createUserMutation.isPending || updateUserMutation.isPending;
+    createSpaceMutation.isPending || updateSpaceMutation.isPending;
 
   return (
-    <MainLayout requireAdmin={true}>
+    <MainLayout requireAdmin={false}>
       <div className="space-y-6">
         <div className="flex gap-6 items-center">
           <Link to="/dashboard">
@@ -238,10 +252,10 @@ const UsersPage = () => {
           </Link>
           <div>
             <h1 className="flex items-center gap-6 text-3xl font-bold text-gray-100 dark:text-gray-50 font-playwrite">
-              <Users className="size-8" /> Usuários
+              <Place className="size-8" /> Espaços
             </h1>
             <p className="text-gray-50 dark:text-gray-300 mt-3">
-              Gerenciar todos os usuários do sistema
+              Gerenciar espaços
             </p>
           </div>
         </div>
@@ -249,32 +263,33 @@ const UsersPage = () => {
         <div className="bg-white dark:bg-card rounded-lg p-4 shadow-sm dark:shadow-lg border dark:border-border transition-colors">
           <div className="flex flex-col lg:flex-row gap-4 lg:items-center mb-4 lg:justify-between">
             <div className="w-full lg:w-auto">
-              <TeacherFilters
+              <SpaceFilters
                 filters={filters}
                 onFilterChange={handleFilterChange}
               />
             </div>
 
             <div className="flex items-center justify-between lg:justify-start gap-4 w-full lg:w-auto">
-              <Button
-                onClick={handleOpenDialog}
-                className="bg-[var(--solara-800)] hover:bg-[var(--solara-700)] dark:bg-primary dark:hover:bg-primary/90 transition-colors"
-              >
-                Adicionar Usuário
-              </Button>
+              {isAdmin && (
+                <Button
+                  onClick={handleOpenDialog}
+                  className="bg-[var(--solara-800)] hover:bg-[var(--solara-700)] dark:bg-primary dark:hover:bg-primary/90 transition-colors"
+                >
+                  Adicionar Espaço
+                </Button>
+              )}
             </div>
           </div>
 
-          <TeachersList
-            teachers={data?.content || []}
+          <SpaceList
+            spaces={data?.content || []}
             onEdit={handleEdit}
             onDelete={handleDelete}
-            onViewAvailability={handleViewAvailability}
             isLoading={isLoading}
           />
 
           {data?.pagination && (
-            <TeachersPagination
+            <SpacesPagination
               currentPage={data.pagination.currentPage}
               totalPages={data.pagination.totalPages}
               totalItems={data.pagination.totalItems}
@@ -287,27 +302,28 @@ const UsersPage = () => {
         </div>
       </div>
 
+      {/* Responsive Form Dialog/Drawer */}
       {isDesktop ? (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
               <DialogTitle className="dark:text-foreground">
-                {isEditMode ? 'Editar Usuário' : 'Adicionar Usuário'}
+                {isEditMode ? 'Editar Espaço' : 'Adicionar Espaço'}
               </DialogTitle>
               <DialogDescription className="dark:text-muted-foreground">
                 {isEditMode
-                  ? 'Atualize as informações do usuário.'
-                  : 'Preencha o formulário para adicionar um usuário.'}
+                  ? 'Atualize as informações do espaço.'
+                  : 'Preencha o formulário para adicionar um espaço.'}
               </DialogDescription>
             </DialogHeader>
-            <TeacherForm
+            <SpaceForm
               isEditMode={isEditMode}
               formData={formData}
+              space_types={spaceTypesData?.content || []}
               onSubmit={handleSubmit}
+              onSelectChange={handleSelectChange}
               onChange={handleFormChange}
-              onRoleChange={handleRoleChange}
               isSubmitting={isSubmitting}
-              showRoleSelect={true}
             />
           </DialogContent>
         </Dialog>
@@ -316,22 +332,22 @@ const UsersPage = () => {
           <DrawerContent>
             <DrawerHeader className="text-left">
               <DrawerTitle className="dark:text-foreground">
-                {isEditMode ? 'Editar Usuário' : 'Adicionar Usuário'}
+                {isEditMode ? 'Editar Espaço' : 'Adicionar Espaço'}
               </DrawerTitle>
               <DrawerDescription className="dark:text-muted-foreground">
                 {isEditMode
-                  ? 'Atualize as informações do usuário.'
-                  : 'Preencha o formulário para adicionar um usuário.'}
+                  ? 'Atualize as informações do espaço.'
+                  : 'Preencha o formulário para adicionar um espaço.'}
               </DrawerDescription>
             </DrawerHeader>
-            <TeacherForm
+            <SpaceForm
               isEditMode={isEditMode}
               formData={formData}
+              space_types={spaceTypesData?.content || []}
               onSubmit={handleSubmit}
+              onSelectChange={handleSelectChange}
               onChange={handleFormChange}
-              onRoleChange={handleRoleChange}
               isSubmitting={isSubmitting}
-              showRoleSelect={true}
               className="px-4"
             />
             <DrawerFooter className="pt-2">
@@ -349,18 +365,7 @@ const UsersPage = () => {
         </Drawer>
       )}
 
-      {/* User Availability Dialog */}
-      <TeacherAvailabilityDialog
-        teacher={selectedUser}
-        isOpen={isAvailabilityDialogOpen}
-        onClose={() => {
-          setIsAvailabilityDialogOpen(false);
-          setSelectedUser(null);
-        }}
-        isDesktop={isDesktop}
-        allowEdit={true}
-      />
-
+      {/* Delete Confirmation Dialog */}
       <AlertDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
@@ -371,9 +376,9 @@ const UsersPage = () => {
               Confirmar exclusão
             </AlertDialogTitle>
             <AlertDialogDescription className="dark:text-muted-foreground">
-              Tem certeza que deseja excluir o usuário{' '}
+              Tem certeza que deseja excluir o espaço{' '}
               <span className="font-semibold dark:text-foreground">
-                {selectedUser?.full_name}
+                {selectedSpace?.name}
               </span>
               ? Esta ação não pode ser desfeita.
             </AlertDialogDescription>
@@ -385,9 +390,9 @@ const UsersPage = () => {
             <AlertDialogAction
               onClick={handleConfirmDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/80 transition-colors"
-              disabled={deleteUserMutation.isPending}
+              disabled={deleteSpaceMutation.isPending}
             >
-              {deleteUserMutation.isPending ? 'Excluindo...' : 'Excluir'}
+              {deleteSpaceMutation.isPending ? 'Excluindo...' : 'Excluir'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -396,4 +401,4 @@ const UsersPage = () => {
   );
 };
 
-export default UsersPage;
+export default Spaces;
