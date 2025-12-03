@@ -28,53 +28,44 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Return, Users } from '@/assets/icons';
-import { TeacherFilters } from '@/components/teachers/TeacherFilters';
-import { TeachersList } from '@/components/teachers/TeachersList';
-import { TeachersPagination } from '@/components/teachers/TeachersPagination';
-import { TeacherForm } from '@/components/teachers/TeacherForm';
-import { TeacherAvailabilityDialog } from '@/components/teachers/TeacherAvailabilityDialog';
+import { Return, Clock } from '@/assets/icons';
 import { MainLayout } from '@/components/layouts/MainLayout';
-import { useUsers } from '@/hooks/queries/useUsers';
+import { useAuth } from '@/contexts/auth';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import {
-  useCreateUser,
-  useUpdateUser,
-  useDeleteUser,
-} from '@/hooks/mutations/mutationUsers';
-import type { User } from '@/interfaces/user';
-import type { CreateUser } from '@/interfaces/user/create-user';
-import type { UpdateUser } from '@/interfaces/user/update-user';
-import type { UserQuery } from '@/interfaces/user/user-query';
+import type { CreateSchedule } from '@/interfaces/schedule/create-schedule';
+import type { Schedule } from '@/interfaces/schedule';
+import type { ScheduleQuery } from '@/interfaces/schedule/schedule-query';
+import { useSchedules } from '@/hooks/queries/useSchedules';
+import { useCreateSchedule, useDeleteSchedule, useUpdateSchedule } from '@/hooks/mutations/mutationSchedules';
+import type { UpdateSchedule } from '@/interfaces/schedule/update-schedule';
+import { SchedulesFilters } from '@/components/schedules/ScheduleFilters';
+import { ScheduleList } from '@/components/schedules/SchedulesList';
+import { SchedulesPagination } from '@/components/schedules/SchedulePagination';
+import { ScheduleForm } from '@/components/schedules/ScheduleForm';
 
-const INITIAL_FORM_DATA: CreateUser = {
-  full_name: '',
-  email: '',
-  password: '',
-  registration: '',
-  role: 'teacher',
+const INITIAL_FORM_DATA: CreateSchedule = {
+  weekday: '',
+  start_time: '',
+  end_time: '',
 };
 
-const UsersPage = () => {
+const Schedules = () => {
+  const { isAdmin } = useAuth();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isAvailabilityDialogOpen, setIsAvailabilityDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [formData, setFormData] = useState<CreateUser>(INITIAL_FORM_DATA);
+  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
+  const [formData, setFormData] = useState<CreateSchedule>(INITIAL_FORM_DATA);
 
   // Filters and pagination
-  const [filters, setFilters] = useState<UserQuery>({
+  const [filters, setFilters] = useState<ScheduleQuery>({
     page: 1,
     limit: 10,
-    full_name: '',
-    registration: '',
-    email: '',
   });
 
   // Debounce for filters
-  const [debouncedFilters, setDebouncedFilters] = useState<UserQuery>(filters);
+  const [debouncedFilters, setDebouncedFilters] = useState<ScheduleQuery>(filters);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -85,16 +76,16 @@ const UsersPage = () => {
   }, [filters]);
 
   // Queries and mutations
-  const { data, isLoading } = useUsers(debouncedFilters);
-  const createUserMutation = useCreateUser();
-  const updateUserMutation = useUpdateUser();
-  const deleteUserMutation = useDeleteUser();
+  const { data, isLoading } = useSchedules(debouncedFilters);
+  const createScheduleMutation = useCreateSchedule();
+  const updateScheduleMutation = useUpdateSchedule();
+  const deleteScheduleMutation = useDeleteSchedule();
 
   const handleFilterChange = (name: string, value: string) => {
     setFilters((prev) => ({
       ...prev,
       [name]: value,
-      page: 1,
+      page: 1, // Reset to first page on filter
     }));
   };
 
@@ -108,7 +99,7 @@ const UsersPage = () => {
   const handleOpenDialog = () => {
     setIsEditMode(false);
     setFormData(INITIAL_FORM_DATA);
-    setSelectedUser(null);
+    setSelectedSchedule(null);
     setIsDialogOpen(true);
   };
 
@@ -116,40 +107,41 @@ const UsersPage = () => {
     setIsDialogOpen(false);
     setIsEditMode(false);
     setFormData(INITIAL_FORM_DATA);
-    setSelectedUser(null);
+    setSelectedSchedule(null);
   };
 
-  const handleEdit = (user: User) => {
+  const handleEdit = (schedule: Schedule) => {
     setIsEditMode(true);
-    setSelectedUser(user);
+    setSelectedSchedule(schedule);
     setFormData({
-      full_name: user.full_name,
-      email: user.email,
-      registration: user.registration || '',
-      password: '',
-      role: user.role as 'admin' | 'principal' | 'coordinator' | 'teacher',
+      weekday: schedule.weekday,
+      start_time: schedule.start_time,
+      end_time: schedule.end_time
     });
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (user: User) => {
-    setSelectedUser(user);
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleDelete = (schedule: Schedule) => {
+    setSelectedSchedule(schedule);
     setIsDeleteDialogOpen(true);
   };
 
-  const handleViewAvailability = (user: User) => {
-    setSelectedUser(user);
-    setIsAvailabilityDialogOpen(true);
-  };
-
   const handleConfirmDelete = async () => {
-    if (!selectedUser) return;
+    if (!selectedSchedule) return;
 
     try {
-      await deleteUserMutation.mutateAsync(selectedUser.id);
+      await deleteScheduleMutation.mutateAsync(selectedSchedule.id);
       setIsDeleteDialogOpen(false);
-      setSelectedUser(null);
+      setSelectedSchedule(null);
     } catch (error) {
+      // Error already handled by mutation
       console.error(error);
     }
   };
@@ -158,79 +150,52 @@ const UsersPage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleRoleChange = (value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      role: value as 'admin' | 'principal' | 'coordinator' | 'teacher',
+      [name]: value === '' ? '' : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.full_name.trim() || !formData.email.trim()) {
+    if (!formData.weekday.trim() || !formData.start_time.trim() || !formData.end_time.trim()) {
       toast.error('Erro', {
-        description: 'Nome e email são obrigatórios',
+        description: 'Todos os campos são obrigatórios',
       });
       return;
     }
 
     try {
-      if (isEditMode && selectedUser) {
-        const updateData: UpdateUser = {
-          id: selectedUser.id,
-          full_name: formData.full_name,
-          email: formData.email,
-          registration: formData.registration || undefined,
-          role: formData.role,
+      if (isEditMode && selectedSchedule) {
+        const updateData: UpdateSchedule = {
+          id: selectedSchedule.id,
+          weekday: formData.weekday,
+          start_time: formData.start_time,
+          end_time: formData.end_time,
         };
 
-        if (formData.password && formData.password.trim()) {
-          updateData.password = formData.password;
-        }
-
-        await updateUserMutation.mutateAsync(updateData);
+        await updateScheduleMutation.mutateAsync(updateData);
       } else {
-        const createData: CreateUser = {
-          full_name: formData.full_name,
-          email: formData.email,
-          password: formData.password || undefined,
-          registration: formData.registration || undefined,
-          role: formData.role || 'teacher',
+        const createData: CreateSchedule = {
+          weekday: formData.weekday,
+          start_time: formData.start_time,
+          end_time: formData.end_time,
         };
 
-        const result = await createUserMutation.mutateAsync(createData);
-
-        // Show temporary password if generated
-        if (
-          result &&
-          typeof result === 'object' &&
-          'temporaryPassword' in result
-        ) {
-          const tempPassword = (result as { temporaryPassword: string })
-            .temporaryPassword;
-          toast.info('Senha temporária gerada', {
-            description: `Senha: ${tempPassword}`,
-            duration: 10000,
-          });
-        }
+        await createScheduleMutation.mutateAsync(createData);
       }
 
       handleCloseDialog();
     } catch (error) {
+      // Error already handled by mutations
       console.error(error);
     }
   };
 
   const isSubmitting =
-    createUserMutation.isPending || updateUserMutation.isPending;
+    createScheduleMutation.isPending || updateScheduleMutation.isPending;
 
   return (
-    <MainLayout requireAdmin={true}>
+    <MainLayout requireAdmin={false}>
       <div className="space-y-6">
         <div className="flex gap-6 items-center">
           <Link to="/dashboard">
@@ -238,10 +203,10 @@ const UsersPage = () => {
           </Link>
           <div>
             <h1 className="flex items-center gap-6 text-3xl font-bold text-gray-100 dark:text-gray-50 font-playwrite">
-              <Users className="size-8" /> Usuários
+              <Clock className="size-8" /> Horários
             </h1>
             <p className="text-gray-50 dark:text-gray-300 mt-3">
-              Gerenciar todos os usuários do sistema
+              Gerenciar horários
             </p>
           </div>
         </div>
@@ -249,32 +214,33 @@ const UsersPage = () => {
         <div className="bg-white dark:bg-card rounded-lg p-4 shadow-sm dark:shadow-lg border dark:border-border transition-colors">
           <div className="flex flex-col lg:flex-row gap-4 lg:items-center mb-4 lg:justify-between">
             <div className="w-full lg:w-auto">
-              <TeacherFilters
+              <SchedulesFilters
                 filters={filters}
                 onFilterChange={handleFilterChange}
               />
             </div>
 
             <div className="flex items-center justify-between lg:justify-start gap-4 w-full lg:w-auto">
-              <Button
-                onClick={handleOpenDialog}
-                className="bg-[var(--solara-800)] hover:bg-[var(--solara-700)] dark:bg-primary dark:hover:bg-primary/90 transition-colors"
-              >
-                Adicionar Usuário
-              </Button>
+              {isAdmin && (
+                <Button
+                  onClick={handleOpenDialog}
+                  className="bg-[var(--solara-800)] hover:bg-[var(--solara-700)] dark:bg-primary dark:hover:bg-primary/90 transition-colors"
+                >
+                  Adicionar Horário
+                </Button>
+              )}
             </div>
           </div>
 
-          <TeachersList
-            teachers={data?.content || []}
+          <ScheduleList
+            schedules={data?.content || []}
             onEdit={handleEdit}
             onDelete={handleDelete}
-            onViewAvailability={handleViewAvailability}
             isLoading={isLoading}
           />
 
           {data?.pagination && (
-            <TeachersPagination
+            <SchedulesPagination
               currentPage={data.pagination.currentPage}
               totalPages={data.pagination.totalPages}
               totalItems={data.pagination.totalItems}
@@ -287,27 +253,27 @@ const UsersPage = () => {
         </div>
       </div>
 
+      {/* Responsive Form Dialog/Drawer */}
       {isDesktop ? (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
               <DialogTitle className="dark:text-foreground">
-                {isEditMode ? 'Editar Usuário' : 'Adicionar Usuário'}
+                {isEditMode ? 'Editar Horário' : 'Adicionar Horário'}
               </DialogTitle>
               <DialogDescription className="dark:text-muted-foreground">
                 {isEditMode
-                  ? 'Atualize as informações do usuário.'
-                  : 'Preencha o formulário para adicionar um usuário.'}
+                  ? 'Atualize as informações do horário.'
+                  : 'Preencha o formulário para adicionar um horário.'}
               </DialogDescription>
             </DialogHeader>
-            <TeacherForm
+            <ScheduleForm
               isEditMode={isEditMode}
               formData={formData}
               onSubmit={handleSubmit}
+              onSelectChange={handleSelectChange}
               onChange={handleFormChange}
-              onRoleChange={handleRoleChange}
               isSubmitting={isSubmitting}
-              showRoleSelect={true}
             />
           </DialogContent>
         </Dialog>
@@ -316,22 +282,21 @@ const UsersPage = () => {
           <DrawerContent>
             <DrawerHeader className="text-left">
               <DrawerTitle className="dark:text-foreground">
-                {isEditMode ? 'Editar Usuário' : 'Adicionar Usuário'}
+                {isEditMode ? 'Editar Horário' : 'Adicionar Horário'}
               </DrawerTitle>
               <DrawerDescription className="dark:text-muted-foreground">
                 {isEditMode
-                  ? 'Atualize as informações do usuário.'
-                  : 'Preencha o formulário para adicionar um usuário.'}
+                  ? 'Atualize as informações do horário.'
+                  : 'Preencha o formulário para adicionar um horário.'}
               </DrawerDescription>
             </DrawerHeader>
-            <TeacherForm
+            <ScheduleForm
               isEditMode={isEditMode}
               formData={formData}
               onSubmit={handleSubmit}
+              onSelectChange={handleSelectChange}
               onChange={handleFormChange}
-              onRoleChange={handleRoleChange}
               isSubmitting={isSubmitting}
-              showRoleSelect={true}
               className="px-4"
             />
             <DrawerFooter className="pt-2">
@@ -349,18 +314,7 @@ const UsersPage = () => {
         </Drawer>
       )}
 
-      {/* User Availability Dialog */}
-      <TeacherAvailabilityDialog
-        teacher={selectedUser}
-        isOpen={isAvailabilityDialogOpen}
-        onClose={() => {
-          setIsAvailabilityDialogOpen(false);
-          setSelectedUser(null);
-        }}
-        isDesktop={isDesktop}
-        allowEdit={true}
-      />
-
+      {/* Delete Confirmation Dialog */}
       <AlertDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
@@ -371,9 +325,9 @@ const UsersPage = () => {
               Confirmar exclusão
             </AlertDialogTitle>
             <AlertDialogDescription className="dark:text-muted-foreground">
-              Tem certeza que deseja excluir o usuário{' '}
+              Tem certeza que deseja excluir o espaço{' '}
               <span className="font-semibold dark:text-foreground">
-                {selectedUser?.full_name}
+                {selectedSchedule?.weekday} {selectedSchedule?.start_time} {selectedSchedule?.end_time}
               </span>
               ? Esta ação não pode ser desfeita.
             </AlertDialogDescription>
@@ -385,9 +339,9 @@ const UsersPage = () => {
             <AlertDialogAction
               onClick={handleConfirmDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/80 transition-colors"
-              disabled={deleteUserMutation.isPending}
+              disabled={deleteScheduleMutation.isPending}
             >
-              {deleteUserMutation.isPending ? 'Excluindo...' : 'Excluir'}
+              {deleteScheduleMutation.isPending ? 'Excluindo...' : 'Excluir'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -396,4 +350,4 @@ const UsersPage = () => {
   );
 };
 
-export default UsersPage;
+export default Schedules;

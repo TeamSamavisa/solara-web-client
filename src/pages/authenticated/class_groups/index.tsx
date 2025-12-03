@@ -28,53 +28,49 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Return, Users } from '@/assets/icons';
-import { TeacherFilters } from '@/components/teachers/TeacherFilters';
-import { TeachersList } from '@/components/teachers/TeachersList';
-import { TeachersPagination } from '@/components/teachers/TeachersPagination';
-import { TeacherForm } from '@/components/teachers/TeacherForm';
-import { TeacherAvailabilityDialog } from '@/components/teachers/TeacherAvailabilityDialog';
+import { Return, ClassGroupIcon } from '@/assets/icons';
 import { MainLayout } from '@/components/layouts/MainLayout';
-import { useUsers } from '@/hooks/queries/useUsers';
+import { useAuth } from '@/contexts/auth';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import {
-  useCreateUser,
-  useUpdateUser,
-  useDeleteUser,
-} from '@/hooks/mutations/mutationUsers';
-import type { User } from '@/interfaces/user';
-import type { CreateUser } from '@/interfaces/user/create-user';
-import type { UpdateUser } from '@/interfaces/user/update-user';
-import type { UserQuery } from '@/interfaces/user/user-query';
+import type { CreateClassGroup } from '@/interfaces/class-group/create-class-group';
+import type { ClassGroup } from '@/interfaces/class-group';
+import type { ClassGroupQuery } from '@/interfaces/class-group/class-group-query';
+import { useShifts } from '@/hooks/queries/useShifts';
+import { useCourses } from '@/hooks/queries/useCourses';
+import { useCreateClassGroup, useDeleteClassGroup, useUpdateClassGroup } from '@/hooks/mutations/mutationClassGroups';
+import type { UpdateClassGroup } from '@/interfaces/class-group/update-class-group';
+import { ClassGroupFilters } from '@/components/class_groups/ClassGroupFilters';
+import { ClassGroupList } from '@/components/class_groups/ClassGroupList';
+import { useClassGroups } from '@/hooks/queries/useClassGroups';
+import { ClassGroupsPagination } from '@/components/class_groups/ClassGroupsPagination';
+import { ClassGroupForm } from '@/components/class_groups/ClassGroupForm';
 
-const INITIAL_FORM_DATA: CreateUser = {
-  full_name: '',
-  email: '',
-  password: '',
-  registration: '',
-  role: 'teacher',
+const INITIAL_FORM_DATA: CreateClassGroup = {
+  name: '',
+  semester: '',
+  module: '',
+  student_count: 0,
+  shift_id: null,
+  course_id: null,
 };
 
-const UsersPage = () => {
+const ClassGroups = () => {
+  const { isAdmin } = useAuth();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isAvailabilityDialogOpen, setIsAvailabilityDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [formData, setFormData] = useState<CreateUser>(INITIAL_FORM_DATA);
+  const [selectedClassGroup, setSelectedClassGroup] = useState<ClassGroup | null>(null);
+  const [formData, setFormData] = useState<CreateClassGroup>(INITIAL_FORM_DATA);
 
   // Filters and pagination
-  const [filters, setFilters] = useState<UserQuery>({
+  const [filters, setFilters] = useState<ClassGroupQuery>({
     page: 1,
     limit: 10,
-    full_name: '',
-    registration: '',
-    email: '',
   });
 
   // Debounce for filters
-  const [debouncedFilters, setDebouncedFilters] = useState<UserQuery>(filters);
+  const [debouncedFilters, setDebouncedFilters] = useState<ClassGroupQuery>(filters);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -85,17 +81,30 @@ const UsersPage = () => {
   }, [filters]);
 
   // Queries and mutations
-  const { data, isLoading } = useUsers(debouncedFilters);
-  const createUserMutation = useCreateUser();
-  const updateUserMutation = useUpdateUser();
-  const deleteUserMutation = useDeleteUser();
+  const { data, isLoading } = useClassGroups(debouncedFilters);
+  const { data: shiftsData } = useShifts({ limit: 10 });
+  const { data: cousesData } = useCourses({ limit: 10 });
+  const createClassGroupMutation = useCreateClassGroup();
+  const updateClassGroupMutation = useUpdateClassGroup();
+  const deleteClassGroupMutation = useDeleteClassGroup();
 
   const handleFilterChange = (name: string, value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      [name]: value,
-      page: 1,
-    }));
+    setFilters((prev) => {
+
+      if (value === '' || value === '0') {
+        const newFilters = { ...prev };
+        delete newFilters[name as keyof ClassGroupQuery];
+        return { ...newFilters, page: 1 };
+      }
+
+      return {
+        ...prev,
+        [name]: (name === 'student_count')
+          ? Number(value)
+          : value,
+        page: 1,
+      };
+    });
   };
 
   const handlePageChange = (page: number) => {
@@ -108,7 +117,7 @@ const UsersPage = () => {
   const handleOpenDialog = () => {
     setIsEditMode(false);
     setFormData(INITIAL_FORM_DATA);
-    setSelectedUser(null);
+    setSelectedClassGroup(null);
     setIsDialogOpen(true);
   };
 
@@ -116,40 +125,44 @@ const UsersPage = () => {
     setIsDialogOpen(false);
     setIsEditMode(false);
     setFormData(INITIAL_FORM_DATA);
-    setSelectedUser(null);
+    setSelectedClassGroup(null);
   };
 
-  const handleEdit = (user: User) => {
+  const handleEdit = (class_group: ClassGroup) => {
     setIsEditMode(true);
-    setSelectedUser(user);
+    setSelectedClassGroup(class_group);
     setFormData({
-      full_name: user.full_name,
-      email: user.email,
-      registration: user.registration || '',
-      password: '',
-      role: user.role as 'admin' | 'principal' | 'coordinator' | 'teacher',
+      name: class_group.name,
+      semester: class_group.semester,
+      module: class_group.module,
+      student_count: class_group.student_count,
+      shift_id: class_group.shift_id,
+      course_id: class_group.course_id
     });
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (user: User) => {
-    setSelectedUser(user);
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: parseInt(value),
+    }));
+  };
+
+  const handleDelete = (class_group: ClassGroup) => {
+    setSelectedClassGroup(class_group);
     setIsDeleteDialogOpen(true);
   };
 
-  const handleViewAvailability = (user: User) => {
-    setSelectedUser(user);
-    setIsAvailabilityDialogOpen(true);
-  };
-
   const handleConfirmDelete = async () => {
-    if (!selectedUser) return;
+    if (!selectedClassGroup) return;
 
     try {
-      await deleteUserMutation.mutateAsync(selectedUser.id);
+      await deleteClassGroupMutation.mutateAsync(selectedClassGroup.id);
       setIsDeleteDialogOpen(false);
-      setSelectedUser(null);
+      setSelectedClassGroup(null);
     } catch (error) {
+      // Error already handled by mutation
       console.error(error);
     }
   };
@@ -158,79 +171,94 @@ const UsersPage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleRoleChange = (value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      role: value as 'admin' | 'principal' | 'coordinator' | 'teacher',
+      [name]: value === '' ? '' : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.full_name.trim() || !formData.email.trim()) {
+    if (!formData.name.trim()) {
       toast.error('Erro', {
-        description: 'Nome e email são obrigatórios',
+        description: 'O nome é obrigatório',
+      });
+      return;
+    }
+
+    if (!formData.semester.trim()) {
+      toast.error('Erro', {
+        description: 'O semestre é obrigatório',
+      });
+      return;
+    }
+
+    if (!formData.module.trim()) {
+      toast.error('Erro', {
+        description: 'O módulo é obrigatório',
+      });
+      return;
+    }
+
+    if (formData.student_count === null) {
+      toast.error('Erro', {
+        description: 'O nº de alunos é obrigatório',
+      });
+      return;
+    }
+
+    if (formData.shift_id === null) {
+      toast.error('Erro', {
+        description: 'O turno é obrigatório',
+      });
+      return;
+    }
+
+
+    if (formData.course_id === null) {
+      toast.error('Erro', {
+        description: 'O curso é obrigatório',
       });
       return;
     }
 
     try {
-      if (isEditMode && selectedUser) {
-        const updateData: UpdateUser = {
-          id: selectedUser.id,
-          full_name: formData.full_name,
-          email: formData.email,
-          registration: formData.registration || undefined,
-          role: formData.role,
+      if (isEditMode && selectedClassGroup) {
+        const updateData: UpdateClassGroup = {
+          id: selectedClassGroup.id,
+          name: formData.name,
+          semester: formData.semester,
+          module: formData.module,
+          student_count: Number(formData.student_count),
+          shift_id: Number(formData.shift_id),
+          course_id: Number(formData.course_id)
         };
 
-        if (formData.password && formData.password.trim()) {
-          updateData.password = formData.password;
-        }
-
-        await updateUserMutation.mutateAsync(updateData);
+        await updateClassGroupMutation.mutateAsync(updateData);
       } else {
-        const createData: CreateUser = {
-          full_name: formData.full_name,
-          email: formData.email,
-          password: formData.password || undefined,
-          registration: formData.registration || undefined,
-          role: formData.role || 'teacher',
+        const createData: CreateClassGroup = {
+          name: formData.name,
+          semester: formData.semester,
+          module: formData.module,
+          student_count: Number(formData.student_count),
+          shift_id: Number(formData.shift_id),
+          course_id: Number(formData.course_id)
         };
 
-        const result = await createUserMutation.mutateAsync(createData);
-
-        // Show temporary password if generated
-        if (
-          result &&
-          typeof result === 'object' &&
-          'temporaryPassword' in result
-        ) {
-          const tempPassword = (result as { temporaryPassword: string })
-            .temporaryPassword;
-          toast.info('Senha temporária gerada', {
-            description: `Senha: ${tempPassword}`,
-            duration: 10000,
-          });
-        }
+        await createClassGroupMutation.mutateAsync(createData);
       }
 
       handleCloseDialog();
     } catch (error) {
+      // Error already handled by mutations
       console.error(error);
     }
   };
 
   const isSubmitting =
-    createUserMutation.isPending || updateUserMutation.isPending;
+    createClassGroupMutation.isPending || updateClassGroupMutation.isPending;
 
   return (
-    <MainLayout requireAdmin={true}>
+    <MainLayout requireAdmin={false}>
       <div className="space-y-6">
         <div className="flex gap-6 items-center">
           <Link to="/dashboard">
@@ -238,10 +266,10 @@ const UsersPage = () => {
           </Link>
           <div>
             <h1 className="flex items-center gap-6 text-3xl font-bold text-gray-100 dark:text-gray-50 font-playwrite">
-              <Users className="size-8" /> Usuários
+              <ClassGroupIcon className="size-8" /> Turmas
             </h1>
             <p className="text-gray-50 dark:text-gray-300 mt-3">
-              Gerenciar todos os usuários do sistema
+              Gerenciar turmas
             </p>
           </div>
         </div>
@@ -249,32 +277,33 @@ const UsersPage = () => {
         <div className="bg-white dark:bg-card rounded-lg p-4 shadow-sm dark:shadow-lg border dark:border-border transition-colors">
           <div className="flex flex-col lg:flex-row gap-4 lg:items-center mb-4 lg:justify-between">
             <div className="w-full lg:w-auto">
-              <TeacherFilters
+              <ClassGroupFilters
                 filters={filters}
                 onFilterChange={handleFilterChange}
               />
             </div>
 
             <div className="flex items-center justify-between lg:justify-start gap-4 w-full lg:w-auto">
-              <Button
-                onClick={handleOpenDialog}
-                className="bg-[var(--solara-800)] hover:bg-[var(--solara-700)] dark:bg-primary dark:hover:bg-primary/90 transition-colors"
-              >
-                Adicionar Usuário
-              </Button>
+              {isAdmin && (
+                <Button
+                  onClick={handleOpenDialog}
+                  className="bg-[var(--solara-800)] hover:bg-[var(--solara-700)] dark:bg-primary dark:hover:bg-primary/90 transition-colors"
+                >
+                  Adicionar Turma
+                </Button>
+              )}
             </div>
           </div>
 
-          <TeachersList
-            teachers={data?.content || []}
+          <ClassGroupList
+            class_groups={data?.content || []}
             onEdit={handleEdit}
             onDelete={handleDelete}
-            onViewAvailability={handleViewAvailability}
             isLoading={isLoading}
           />
 
           {data?.pagination && (
-            <TeachersPagination
+            <ClassGroupsPagination
               currentPage={data.pagination.currentPage}
               totalPages={data.pagination.totalPages}
               totalItems={data.pagination.totalItems}
@@ -287,27 +316,29 @@ const UsersPage = () => {
         </div>
       </div>
 
+      {/* Responsive Form Dialog/Drawer */}
       {isDesktop ? (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
               <DialogTitle className="dark:text-foreground">
-                {isEditMode ? 'Editar Usuário' : 'Adicionar Usuário'}
+                {isEditMode ? 'Editar Turma' : 'Adicionar Turma'}
               </DialogTitle>
               <DialogDescription className="dark:text-muted-foreground">
                 {isEditMode
-                  ? 'Atualize as informações do usuário.'
-                  : 'Preencha o formulário para adicionar um usuário.'}
+                  ? 'Atualize as informações da turma.'
+                  : 'Preencha o formulário para adicionar uma turma.'}
               </DialogDescription>
             </DialogHeader>
-            <TeacherForm
+            <ClassGroupForm
               isEditMode={isEditMode}
               formData={formData}
+              shifts={shiftsData?.content || []}
+              courses={cousesData?.content || []}
               onSubmit={handleSubmit}
+              onSelectChange={handleSelectChange}
               onChange={handleFormChange}
-              onRoleChange={handleRoleChange}
               isSubmitting={isSubmitting}
-              showRoleSelect={true}
             />
           </DialogContent>
         </Dialog>
@@ -316,22 +347,23 @@ const UsersPage = () => {
           <DrawerContent>
             <DrawerHeader className="text-left">
               <DrawerTitle className="dark:text-foreground">
-                {isEditMode ? 'Editar Usuário' : 'Adicionar Usuário'}
+                {isEditMode ? 'Editar Turma' : 'Adicionar Turma'}
               </DrawerTitle>
               <DrawerDescription className="dark:text-muted-foreground">
                 {isEditMode
-                  ? 'Atualize as informações do usuário.'
-                  : 'Preencha o formulário para adicionar um usuário.'}
+                  ? 'Atualize as informações da turma.'
+                  : 'Preencha o formulário para adicionar uma turma.'}
               </DrawerDescription>
             </DrawerHeader>
-            <TeacherForm
+            <ClassGroupForm
               isEditMode={isEditMode}
               formData={formData}
+              shifts={shiftsData?.content || []}
+              courses={cousesData?.content || []}
               onSubmit={handleSubmit}
+              onSelectChange={handleSelectChange}
               onChange={handleFormChange}
-              onRoleChange={handleRoleChange}
               isSubmitting={isSubmitting}
-              showRoleSelect={true}
               className="px-4"
             />
             <DrawerFooter className="pt-2">
@@ -349,18 +381,7 @@ const UsersPage = () => {
         </Drawer>
       )}
 
-      {/* User Availability Dialog */}
-      <TeacherAvailabilityDialog
-        teacher={selectedUser}
-        isOpen={isAvailabilityDialogOpen}
-        onClose={() => {
-          setIsAvailabilityDialogOpen(false);
-          setSelectedUser(null);
-        }}
-        isDesktop={isDesktop}
-        allowEdit={true}
-      />
-
+      {/* Delete Confirmation Dialog */}
       <AlertDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
@@ -371,9 +392,9 @@ const UsersPage = () => {
               Confirmar exclusão
             </AlertDialogTitle>
             <AlertDialogDescription className="dark:text-muted-foreground">
-              Tem certeza que deseja excluir o usuário{' '}
+              Tem certeza que deseja excluir a turma{' '}
               <span className="font-semibold dark:text-foreground">
-                {selectedUser?.full_name}
+                {selectedClassGroup?.name}
               </span>
               ? Esta ação não pode ser desfeita.
             </AlertDialogDescription>
@@ -385,9 +406,9 @@ const UsersPage = () => {
             <AlertDialogAction
               onClick={handleConfirmDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/80 transition-colors"
-              disabled={deleteUserMutation.isPending}
+              disabled={deleteClassGroupMutation.isPending}
             >
-              {deleteUserMutation.isPending ? 'Excluindo...' : 'Excluir'}
+              {deleteClassGroupMutation.isPending ? 'Excluindo...' : 'Excluir'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -396,4 +417,4 @@ const UsersPage = () => {
   );
 };
 
-export default UsersPage;
+export default ClassGroups;
