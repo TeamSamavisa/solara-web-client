@@ -12,10 +12,13 @@ import Unauthorized from '@/pages/error/401';
 import Forbidden from '@/pages/error/403';
 import NotFound from '@/pages/error/404';
 import { useRoutes } from 'react-router';
+import CourseTypes from '@/pages/authenticated/course-types';
+import Courses from '@/pages/authenticated/courses';
 import Spaces from '@/pages/authenticated/spaces';
 import SpaceTypes from '@/pages/authenticated/space_types';
 import Schedules from '@/pages/authenticated/schedules';
 import ClassGroups from '@/pages/authenticated/class_groups';
+import Shifts from '@/pages/authenticated/shifts';
 
 export function Routes() {
   return useRoutes([
@@ -41,7 +44,10 @@ export function Routes() {
             { path: 'space_types', element: <SpaceTypes /> },
             { path: 'schedules', element: <Schedules /> },
             { path: 'assignments', element: <Assignments /> },
+            { path: 'course-types', element: <CourseTypes /> },
+            { path: 'courses', element: <Courses /> },
             { path: 'class_groups', element: <ClassGroups /> },
+            { path: 'shifts', element: <Shifts /> },
           ],
         },
 

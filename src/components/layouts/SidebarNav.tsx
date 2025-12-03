@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router';
-import { Home, User, Logout, Users, Calendar, Clock, Place, ClassGroupIcon } from '@/assets/icons';
+import { Home, User, Logout, Users, Calendar, Book, Clock, Place, ClassGroupIcon, ShiftTime, GraduationCap } from '@/assets/icons';
 import { useAuth } from '@/contexts/auth';
 import { useRecentActions } from '@/hooks/useRecentActions';
 import { useRole } from '@/hooks/useRole';
@@ -79,7 +79,6 @@ export function SidebarNav() {
             icon={<Calendar className="size-4" />}
           />
         </nav>
-
         {/* management section - coordinator and above */}
         {hasRole('coordinator') && (
           <>
@@ -119,10 +118,24 @@ export function SidebarNav() {
                 label="Alocações"
                 icon={<Calendar className="size-4" />}
               />
+              <NavItem
+                to="/course-types"
+                label="Tipos de Cursos"
+                icon={<Book className="size-4" />}
+              />
+              <NavItem
+                to="/courses"
+                label="Cursos"
+                icon={<GraduationCap className="size-4" />}
+              />
+              <NavItem
+                to="/shifts"
+                label="Turnos"
+                icon={<ShiftTime className="size-4" />}
+              />
             </nav>
           </>
         )}
-
         {/* administration section - admin only */}
         {isAdmin && (
           <>
