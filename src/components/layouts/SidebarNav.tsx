@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router';
-import { Home, User, Logout, Users, Calendar, Book, Clock, Place, ClassGroupIcon, ShiftTime, GraduationCap } from '@/assets/icons';
+import { Home, User, Logout, Users, Calendar, Book, Clock, Place, ClassGroupIcon, ShiftTime, GraduationCap, Science } from '@/assets/icons';
 import { useAuth } from '@/contexts/auth';
 import { useRecentActions } from '@/hooks/useRecentActions';
 import { useRole } from '@/hooks/useRole';
@@ -132,6 +132,11 @@ export function SidebarNav() {
                 to="/shifts"
                 label="Turnos"
                 icon={<ShiftTime className="size-4" />}
+              />
+              <NavItem
+                to="/subjects"
+                label="Disciplinas"
+                icon={<Science className="size-4" />}
               />
             </nav>
           </>

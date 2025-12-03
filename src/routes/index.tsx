@@ -19,6 +19,7 @@ import SpaceTypes from '@/pages/authenticated/space_types';
 import Schedules from '@/pages/authenticated/schedules';
 import ClassGroups from '@/pages/authenticated/class_groups';
 import Shifts from '@/pages/authenticated/shifts';
+import Subjects from '@/pages/authenticated/subjects';
 
 export function Routes() {
   return useRoutes([
@@ -48,6 +49,7 @@ export function Routes() {
             { path: 'courses', element: <Courses /> },
             { path: 'class_groups', element: <ClassGroups /> },
             { path: 'shifts', element: <Shifts /> },
+            { path: 'subjects', element: <Subjects /> },
           ],
         },
 

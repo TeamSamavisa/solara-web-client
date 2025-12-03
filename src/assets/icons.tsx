@@ -31,6 +31,7 @@ import { FaCircleExclamation } from 'react-icons/fa6';
 import { FaGraduationCap } from "react-icons/fa6";
 import { SiGoogleclassroom } from "react-icons/si";
 import { AiOutlineFieldTime } from "react-icons/ai";
+import { MdOutlineScience } from "react-icons/md";
 
 import {
   Check as CheckIcon,
@@ -46,6 +47,7 @@ import {
 } from 'lucide-react';
 
 export {
+  MdOutlineScience as Science,
   AiOutlineFieldTime as ShiftTime,
   FaGraduationCap as GraduationCap,
   IoLogOutSharp as Logout,
