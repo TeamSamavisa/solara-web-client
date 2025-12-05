@@ -1,5 +1,19 @@
 import { Link, useLocation } from 'react-router';
-import { Home, User, Logout, Users, Calendar, Book, Clock, Place, ClassGroupIcon, ShiftTime, GraduationCap, Science } from '@/assets/icons';
+import {
+  Home,
+  User,
+  Logout,
+  Users,
+  Calendar,
+  Book,
+  Clock,
+  Place,
+  ClassGroupIcon,
+  ShiftTime,
+  GraduationCap,
+  Science,
+  Bot,
+} from '@/assets/icons';
 import { useAuth } from '@/contexts/auth';
 import { useRecentActions } from '@/hooks/useRecentActions';
 import { useRole } from '@/hooks/useRole';
@@ -67,6 +81,7 @@ export function SidebarNav() {
       </div>
 
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        {/* basic navigation - all users */}
         <nav className="space-y-1">
           <NavItem
             to="/dashboard"
@@ -79,34 +94,20 @@ export function SidebarNav() {
             icon={<Calendar className="size-4" />}
           />
         </nav>
-        {/* management section - coordinator and above */}
+
+        {/* academic management - coordinator and director */}
         {hasRole('coordinator') && (
           <>
-            <div className="pt-4 pb-2">
+            <div className="pt-6 pb-2">
               <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Gestão
+                Gestão Acadêmica
               </p>
             </div>
             <nav className="space-y-1">
               <NavItem
-                to="/teachers"
-                label="Professores"
-                icon={<Users className="size-4" />}
-              />
-              <NavItem
-                to="/space_types"
-                label="Tipos de Espaços"
-                icon={<Place className="size-4" />}
-              />
-              <NavItem
-                to="/spaces"
-                label="Espaços"
-                icon={<Place className="size-4" />}
-              />
-              <NavItem
-                to="/schedules"
-                label="Horários"
-                icon={<Clock className="size-4" />}
+                to="/assignments"
+                label="Alocações"
+                icon={<Calendar className="size-4" />}
               />
               <NavItem
                 to="/class_groups"
@@ -114,24 +115,9 @@ export function SidebarNav() {
                 icon={<ClassGroupIcon className="size-4" />}
               />
               <NavItem
-                to="/assignments"
-                label="Alocações"
-                icon={<Calendar className="size-4" />}
-              />
-              <NavItem
-                to="/course-types"
-                label="Tipos de Cursos"
-                icon={<Book className="size-4" />}
-              />
-              <NavItem
-                to="/courses"
-                label="Cursos"
-                icon={<GraduationCap className="size-4" />}
-              />
-              <NavItem
-                to="/shifts"
-                label="Turnos"
-                icon={<ShiftTime className="size-4" />}
+                to="/teachers"
+                label="Professores"
+                icon={<Users className="size-4" />}
               />
               <NavItem
                 to="/subjects"
@@ -141,12 +127,67 @@ export function SidebarNav() {
             </nav>
           </>
         )}
-        {/* administration section - admin only */}
+
+        {/* system administration - admin only */}
         {isAdmin && (
           <>
-            <div className="pt-4 pb-2">
+            <div className="pt-6 pb-2">
               <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Administração
+                Configurações
+              </p>
+            </div>
+            <nav className="space-y-1">
+              <NavItem
+                to="/schedules"
+                label="Horários"
+                icon={<Clock className="size-4" />}
+              />
+              <NavItem
+                to="/shifts"
+                label="Turnos"
+                icon={<ShiftTime className="size-4" />}
+              />
+            </nav>
+
+            <div className="pt-6 pb-2">
+              <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Cursos
+              </p>
+            </div>
+            <nav className="space-y-1">
+              <NavItem
+                to="/courses"
+                label="Cursos"
+                icon={<GraduationCap className="size-4" />}
+              />
+              <NavItem
+                to="/course-types"
+                label="Tipos de Cursos"
+                icon={<Book className="size-4" />}
+              />
+            </nav>
+
+            <div className="pt-6 pb-2">
+              <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Espaços
+              </p>
+            </div>
+            <nav className="space-y-1">
+              <NavItem
+                to="/spaces"
+                label="Espaços"
+                icon={<Place className="size-4" />}
+              />
+              <NavItem
+                to="/space_types"
+                label="Tipos de Espaços"
+                icon={<Place className="size-4" />}
+              />
+            </nav>
+
+            <div className="pt-6 pb-2">
+              <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Sistema
               </p>
             </div>
             <nav className="space-y-1">
@@ -164,6 +205,17 @@ export function SidebarNav() {
         <div className="px-3 py-2">
           <ThemeToggle />
         </div>
+        <a
+          href={import.meta.env.VITE_OPEN_WEBUI_URL || 'http://localhost:8080'}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center px-3 py-2 text-sm rounded-md transition-colors text-gray-600 dark:text-sidebar-foreground hover:text-[var(--solara-900)] dark:hover:text-sidebar-primary hover:bg-[var(--solara-50)] dark:hover:bg-sidebar-accent/50"
+        >
+          <span className="mr-2">
+            <Bot className="size-4" />
+          </span>
+          Assistente IA
+        </a>
         <NavItem
           to="/profile"
           label="Perfil"

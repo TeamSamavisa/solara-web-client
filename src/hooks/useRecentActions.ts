@@ -27,11 +27,15 @@ const STORAGE_KEY = '@solara:recent-actions';
 const routeConfig: Record<string, RouteConfig> = {
   '/assignments': {
     label: 'Alocações',
-    icon: Calendar,
+    icon: Assignment,
   },
   '/availability': {
     label: 'Disponibilidade',
     icon: Calendar,
+  },
+  '/class_groups': {
+    label: 'Turmas',
+    icon: Student,
   },
   '/subjects': {
     label: 'Disciplinas',
@@ -45,17 +49,29 @@ const routeConfig: Record<string, RouteConfig> = {
     label: 'Usuários',
     icon: Users,
   },
-  '/periods': {
-    label: 'Períodos',
+  '/schedules': {
+    label: 'Horários',
+    icon: Clock,
+  },
+  '/shifts': {
+    label: 'Turnos',
     icon: Clock,
   },
   '/spaces': {
     label: 'Espaços',
     icon: Assignment,
   },
+  '/space_types': {
+    label: 'Tipos de Espaços',
+    icon: Assignment,
+  },
   '/courses': {
     label: 'Cursos',
     icon: Student,
+  },
+  '/course-types': {
+    label: 'Tipos de Cursos',
+    icon: Book,
   },
   '/profile': {
     label: 'Perfil',

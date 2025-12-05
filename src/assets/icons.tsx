@@ -28,10 +28,10 @@ import { MdAssignment } from 'react-icons/md';
 import { IoLogOutSharp } from 'react-icons/io5';
 import { IoCalendar } from 'react-icons/io5';
 import { FaCircleExclamation } from 'react-icons/fa6';
-import { FaGraduationCap } from "react-icons/fa6";
-import { SiGoogleclassroom } from "react-icons/si";
-import { AiOutlineFieldTime } from "react-icons/ai";
-import { MdOutlineScience } from "react-icons/md";
+import { FaGraduationCap } from 'react-icons/fa6';
+import { SiGoogleclassroom } from 'react-icons/si';
+import { AiOutlineFieldTime } from 'react-icons/ai';
+import { MdOutlineScience } from 'react-icons/md';
 
 import {
   Check as CheckIcon,
@@ -44,6 +44,7 @@ import {
   UserMinus as UserMinusIcon,
   LayoutDashboard as DashboardIcon,
   MoreHorizontal as MoreHorizontalIcon,
+  Bot as BotIcon,
 } from 'lucide-react';
 
 export {
@@ -90,4 +91,5 @@ export {
   UserMinusIcon as UserMinus,
   DashboardIcon as Dashboard,
   MoreHorizontalIcon as MoreHorizontal,
+  BotIcon as Bot,
 };
