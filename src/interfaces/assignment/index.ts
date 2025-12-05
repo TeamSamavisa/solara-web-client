@@ -6,12 +6,12 @@ import type { User } from '../user';
 
 export interface Assignment {
   id: number;
-  schedule_id: number;
   teacher_id: number;
   subject_id: number;
-  space_id: number;
+  space_id: number | null;
   class_group_id: number;
-  schedule?: Schedule;
+  duration?: number;
+  schedules?: Schedule[];
   teacher?: User;
   subject?: Subject;
   space?: Space;
@@ -41,11 +41,12 @@ export interface Assignment {
 }
 
 export interface CreateAssignment {
-  schedule_id: number;
+  schedule_ids?: number[];
   teacher_id: number;
   subject_id: number;
-  space_id: number;
+  space_id?: number | null;
   class_group_id: number;
+  duration?: number;
 }
 
 export interface UpdateAssignment extends Partial<CreateAssignment> {
