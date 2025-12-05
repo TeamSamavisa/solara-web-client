@@ -35,6 +35,16 @@ export const ScheduleList: React.FC<SchedulesListProps> = ({
   const { isAdmin } = useRole();
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
 
+  const weekdayTranslation: Record<string, string> = {
+    Monday: 'Segunda-feira',
+    Tuesday: 'Terça-feira',
+    Wednesday: 'Quarta-feira',
+    Thursday: 'Quinta-feira',
+    Friday: 'Sexta-feira',
+    Saturday: 'Sábado',
+    Sunday: 'Domingo',
+  };
+
   const handleEdit = (schedule: Schedule) => {
     setOpenDropdown(null);
     onEdit(schedule);
@@ -50,9 +60,16 @@ export const ScheduleList: React.FC<SchedulesListProps> = ({
       <Table>
         <TableHeader>
           <TableRow className="dark:border-border hover:bg-muted/50 dark:hover:bg-muted/20">
-            <TableHead className="dark:text-foreground">Dia da Semana</TableHead>
-            <TableHead className="dark:text-foreground">Hora de Início</TableHead>
-            <TableHead className="dark:text-foreground">Hora de Término</TableHead>
+            <TableHead className="dark:text-foreground">
+              Dia da Semana
+            </TableHead>
+            <TableHead className="dark:text-foreground">Turno</TableHead>
+            <TableHead className="dark:text-foreground">
+              Hora de Início
+            </TableHead>
+            <TableHead className="dark:text-foreground">
+              Hora de Término
+            </TableHead>
             {isAdmin && (
               <TableHead className="text-right dark:text-foreground">
                 Ações
@@ -79,7 +96,16 @@ export const ScheduleList: React.FC<SchedulesListProps> = ({
                 className="group dark:border-border hover:bg-muted/50 dark:hover:bg-muted/20 transition-colors"
               >
                 <TableCell className="dark:text-foreground">
-                  {schedule.weekday || (
+                  {schedule.weekday ? (
+                    weekdayTranslation[schedule.weekday] || schedule.weekday
+                  ) : (
+                    <span className="text-gray-400 dark:text-muted-foreground italic">
+                      Não informado
+                    </span>
+                  )}
+                </TableCell>
+                <TableCell className="dark:text-foreground">
+                  {schedule.shift?.name || (
                     <span className="text-gray-400 dark:text-muted-foreground italic">
                       Não informado
                     </span>

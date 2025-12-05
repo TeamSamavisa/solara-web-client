@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { useShifts } from '@/hooks/queries/useShifts';
 
 interface ScheduleFormProps {
   isEditMode: boolean;
@@ -17,6 +18,7 @@ interface ScheduleFormProps {
     weekday: string;
     start_time: string;
     end_time: string;
+    shift_id: number | '';
   };
   onSubmit: (e: React.FormEvent) => void;
   onSelectChange: (name: string, value: string) => void;
@@ -34,6 +36,10 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
   isSubmitting = false,
   className,
 }) => {
+  const { data: shiftsData, isLoading: isLoadingShifts } = useShifts({
+    limit: 100,
+  });
+
   return (
     <form
       onSubmit={onSubmit}
@@ -45,17 +51,43 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
         </Label>
         <Select
           value={formData.weekday || ''}
-          onValueChange={(value) => onSelectChange('weekday', value)}>
+          onValueChange={(value) => onSelectChange('weekday', value)}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Selecione uma opção" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Segunda">Segunda</SelectItem>
-            <SelectItem value="Terça">Terça</SelectItem>
-            <SelectItem value="Quarta">Quarta</SelectItem>
-            <SelectItem value="Quinta">Quinta</SelectItem>
-            <SelectItem value="Sexta">Sexta</SelectItem>
-            <SelectItem value="Sábado">Sábado</SelectItem>
+            <SelectItem value="Monday">Segunda</SelectItem>
+            <SelectItem value="Tuesday">Terça</SelectItem>
+            <SelectItem value="Wednesday">Quarta</SelectItem>
+            <SelectItem value="Thursday">Quinta</SelectItem>
+            <SelectItem value="Friday">Sexta</SelectItem>
+            <SelectItem value="Saturday">Sábado</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="shift_id" className="dark:text-foreground">
+          Turno *
+        </Label>
+        <Select
+          value={formData.shift_id ? String(formData.shift_id) : ''}
+          onValueChange={(value) => onSelectChange('shift_id', value)}
+          disabled={isLoadingShifts}
+        >
+          <SelectTrigger>
+            <SelectValue
+              placeholder={
+                isLoadingShifts ? 'Carregando...' : 'Selecione um turno'
+              }
+            />
+          </SelectTrigger>
+          <SelectContent>
+            {shiftsData?.content?.map((shift) => (
+              <SelectItem key={shift.id} value={String(shift.id)}>
+                {shift.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -80,8 +112,8 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
               target: {
                 ...e.target,
                 name: 'start_time',
-                value: formatted
-              }
+                value: formatted,
+              },
             } as React.ChangeEvent<HTMLInputElement>);
           }}
           placeholder="HH:MM"
@@ -104,14 +136,14 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
             if (value.length >= 2) {
               formatted = value.slice(0, 2) + ':' + value.slice(2, 4);
             }
-            
+
             onChange({
               ...e,
               target: {
                 ...e.target,
                 name: 'end_time',
-                value: formatted
-              }
+                value: formatted,
+              },
             } as React.ChangeEvent<HTMLInputElement>);
           }}
           placeholder="HH:MM"
@@ -132,6 +164,6 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
               : 'Adicionar'}
         </Button>
       </div>
-    </form >
+    </form>
   );
 };
