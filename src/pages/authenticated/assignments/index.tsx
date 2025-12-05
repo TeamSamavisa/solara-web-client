@@ -43,15 +43,17 @@ import type {
 const INITIAL_FORM_DATA: {
   teacher_id: number | null;
   subject_id: number | null;
-  schedule_id: number | null;
+  schedule_ids: number[];
   space_id: number | null;
   class_group_id: number | null;
+  duration: number;
 } = {
   teacher_id: null,
   subject_id: null,
-  schedule_id: null,
+  schedule_ids: [],
   space_id: null,
   class_group_id: null,
+  duration: 2,
 };
 
 const Assignments = () => {
@@ -147,9 +149,10 @@ const Assignments = () => {
     setFormData({
       teacher_id: assignment.teacher_id,
       subject_id: assignment.subject_id,
-      schedule_id: assignment.schedule_id,
+      schedule_ids: assignment.schedules?.map((s) => s.id) || [],
       space_id: assignment.space_id,
       class_group_id: assignment.class_group_id,
+      duration: assignment.duration || 2,
     });
     setIsDialogOpen(true);
   };
@@ -173,14 +176,24 @@ const Assignments = () => {
     }));
   };
 
+  const handleScheduleToggle = (scheduleId: number) => {
+    setFormData((prev) => {
+      const isSelected = prev.schedule_ids.includes(scheduleId);
+      return {
+        ...prev,
+        schedule_ids: isSelected
+          ? prev.schedule_ids.filter((id) => id !== scheduleId)
+          : [...prev.schedule_ids, scheduleId],
+      };
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (
       !formData.teacher_id ||
       !formData.subject_id ||
-      !formData.schedule_id ||
-      !formData.space_id ||
       !formData.class_group_id
     ) {
       return;
@@ -189,9 +202,11 @@ const Assignments = () => {
     const assignmentData: CreateAssignment = {
       teacher_id: formData.teacher_id,
       subject_id: formData.subject_id,
-      schedule_id: formData.schedule_id,
-      space_id: formData.space_id,
+      schedule_ids:
+        formData.schedule_ids.length > 0 ? formData.schedule_ids : undefined,
+      space_id: formData.space_id || null,
       class_group_id: formData.class_group_id,
+      duration: formData.duration,
     };
 
     if (isEditMode && selectedAssignment) {
@@ -270,13 +285,14 @@ const Assignments = () => {
 
     const slots = new Set<string>();
     filteredAssignments.forEach((assignment: Assignment) => {
-      const startTime =
-        assignment.schedule?.start_time || assignment['schedule.start_time'];
-      const endTime =
-        assignment.schedule?.end_time || assignment['schedule.end_time'];
-
-      if (startTime && endTime) {
-        slots.add(`${formatTime(startTime)} - ${formatTime(endTime)}`);
+      if (assignment.schedules && assignment.schedules.length > 0) {
+        assignment.schedules.forEach((schedule) => {
+          const startTime = schedule.start_time;
+          const endTime = schedule.end_time;
+          if (startTime && endTime) {
+            slots.add(`${formatTime(startTime)} - ${formatTime(endTime)}`);
+          }
+        });
       }
     });
 
@@ -315,35 +331,33 @@ const Assignments = () => {
     });
 
     filteredAssignments.forEach((assignment: Assignment) => {
-      const weekday = (
-        assignment.schedule?.weekday ||
-        assignment['schedule.weekday'] ||
-        ''
-      ).toLowerCase();
+      if (assignment.schedules && assignment.schedules.length > 0) {
+        assignment.schedules.forEach((schedule) => {
+          const weekday = schedule.weekday.toLowerCase();
+          const startTime = schedule.start_time;
+          const endTime = schedule.end_time;
+          const timeSlot =
+            startTime && endTime
+              ? `${formatTime(startTime)} - ${formatTime(endTime)}`
+              : null;
 
-      const startTime =
-        assignment.schedule?.start_time || assignment['schedule.start_time'];
-      const endTime =
-        assignment.schedule?.end_time || assignment['schedule.end_time'];
-      const timeSlot =
-        startTime && endTime
-          ? `${formatTime(startTime)} - ${formatTime(endTime)}`
-          : null;
-
-      if (weekday && timeSlot && grid[weekday]?.[timeSlot]) {
-        grid[weekday][timeSlot].push({
-          subject:
-            assignment.subject?.name || assignment['subject.name'] || 'N/A',
-          teacher:
-            assignment.teacher?.full_name ||
-            assignment['teacher.full_name'] ||
-            'N/A',
-          space: assignment.space?.name || assignment['space.name'] || 'N/A',
-          classGroup:
-            assignment.classGroup?.name ||
-            assignment['classGroup.name'] ||
-            'N/A',
-          violatesAvailability: Boolean(assignment.violates_availability),
+          if (weekday && timeSlot && grid[weekday]?.[timeSlot]) {
+            grid[weekday][timeSlot].push({
+              subject:
+                assignment.subject?.name || assignment['subject.name'] || 'N/A',
+              teacher:
+                assignment.teacher?.full_name ||
+                assignment['teacher.full_name'] ||
+                'N/A',
+              space:
+                assignment.space?.name || assignment['space.name'] || 'N/A',
+              classGroup:
+                assignment.classGroup?.name ||
+                assignment['classGroup.name'] ||
+                'N/A',
+              violatesAvailability: Boolean(assignment.violates_availability),
+            });
+          }
         });
       }
     });
@@ -608,6 +622,7 @@ const Assignments = () => {
             classGroups={classGroupsData?.content || []}
             onSubmit={handleSubmit}
             onSelectChange={handleSelectChange}
+            onScheduleToggle={handleScheduleToggle}
             onClose={handleCloseDialog}
             isLoading={createMutation.isPending || updateMutation.isPending}
           />

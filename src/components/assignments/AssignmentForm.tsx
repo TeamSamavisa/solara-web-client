@@ -13,7 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2 } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Loader2, X } from 'lucide-react';
 import type { Subject } from '@/interfaces/subject';
 import type { Space } from '@/interfaces/space';
 import type { Schedule } from '@/interfaces/schedule';
@@ -25,9 +26,10 @@ interface AssignmentFormProps {
   formData: {
     teacher_id: number | null;
     subject_id: number | null;
-    schedule_id: number | null;
+    schedule_ids: number[];
     space_id: number | null;
     class_group_id: number | null;
+    duration: number;
   };
   subjects: Subject[];
   schedules: Schedule[];
@@ -36,6 +38,7 @@ interface AssignmentFormProps {
   classGroups: ClassGroup[];
   onSubmit: (e: React.FormEvent) => void;
   onSelectChange: (name: string, value: string) => void;
+  onScheduleToggle: (scheduleId: number) => void;
   onClose: () => void;
   isLoading?: boolean;
 }
@@ -50,6 +53,7 @@ export const AssignmentForm = ({
   classGroups,
   onSubmit,
   onSelectChange,
+  onScheduleToggle,
   onClose,
   isLoading,
 }: AssignmentFormProps) => {
@@ -64,6 +68,10 @@ export const AssignmentForm = ({
       sunday: 'Domingo',
     };
     return days[weekday.toLowerCase()] || weekday;
+  };
+
+  const getSelectedSchedules = () => {
+    return schedules.filter((s) => formData.schedule_ids.includes(s.id));
   };
 
   return (
@@ -122,32 +130,66 @@ export const AssignmentForm = ({
           </Select>
         </div>
 
-        {/* Schedule */}
+        {/* Schedules */}
         <div className="grid gap-2">
-          <Label htmlFor="schedule_id">Horário*</Label>
-          <Select
-            value={formData.schedule_id?.toString() || ''}
-            onValueChange={(value) => onSelectChange('schedule_id', value)}
-            disabled={isLoading}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione um horário" />
-            </SelectTrigger>
-            <SelectContent>
-              {schedules.map((schedule) => (
-                <SelectItem key={schedule.id} value={schedule.id.toString()}>
-                  {translateWeekDay(schedule.weekday)}:{' '}
-                  {schedule.start_time.slice(0, 5)} -{' '}
-                  {schedule.end_time.slice(0, 5)}
-                </SelectItem>
+          <Label>Horários</Label>
+          <div className="border rounded-md p-3 max-h-60 overflow-y-auto space-y-2">
+            {schedules.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Nenhum horário disponível
+              </p>
+            ) : (
+              schedules.map((schedule) => (
+                <div
+                  key={schedule.id}
+                  className="flex items-center space-x-2 py-1"
+                >
+                  <Checkbox
+                    id={`schedule-${schedule.id}`}
+                    checked={formData.schedule_ids.includes(schedule.id)}
+                    onCheckedChange={() => onScheduleToggle(schedule.id)}
+                    disabled={isLoading}
+                  />
+                  <label
+                    htmlFor={`schedule-${schedule.id}`}
+                    className="text-sm cursor-pointer flex-1"
+                  >
+                    {translateWeekDay(schedule.weekday)}:{' '}
+                    {schedule.start_time.slice(0, 5)} -{' '}
+                    {schedule.end_time.slice(0, 5)}
+                  </label>
+                </div>
+              ))
+            )}
+          </div>
+          {getSelectedSchedules().length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {getSelectedSchedules().map((schedule) => (
+                <div
+                  key={schedule.id}
+                  className="inline-flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-md text-xs"
+                >
+                  <span>
+                    {translateWeekDay(schedule.weekday)}:{' '}
+                    {schedule.start_time.slice(0, 5)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onScheduleToggle(schedule.id)}
+                    disabled={isLoading}
+                    className="hover:bg-primary/20 rounded-full p-0.5"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
               ))}
-            </SelectContent>
-          </Select>
+            </div>
+          )}
         </div>
 
         {/* Space */}
         <div className="grid gap-2">
-          <Label htmlFor="space_id">Espaço*</Label>
+          <Label htmlFor="space_id">Espaço</Label>
           <Select
             value={formData.space_id?.toString() || ''}
             onValueChange={(value) => onSelectChange('space_id', value)}
@@ -186,6 +228,26 @@ export const AssignmentForm = ({
                   {classGroup.name}
                 </SelectItem>
               ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Duration */}
+        <div className="grid gap-2">
+          <Label htmlFor="duration">Duração (horas)*</Label>
+          <Select
+            value={formData.duration?.toString() || '2'}
+            onValueChange={(value) => onSelectChange('duration', value)}
+            disabled={isLoading}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione a duração" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1">1 hora</SelectItem>
+              <SelectItem value="2">2 horas</SelectItem>
+              <SelectItem value="3">3 horas</SelectItem>
+              <SelectItem value="4">4 horas</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -1,7 +1,8 @@
 export interface CreateAssignment {
-  schedule_id: number;
+  schedule_ids?: number[];
   teacher_id: number;
   subject_id: number;
-  space_id: number;
+  space_id?: number | null;
   class_group_id: number;
+  duration?: number;
 }
