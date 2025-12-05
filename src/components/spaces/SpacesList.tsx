@@ -60,7 +60,9 @@ export const SpaceList: React.FC<SpacesListProps> = ({
             <TableHead className="dark:text-foreground">Andar/Piso</TableHead>
             <TableHead className="dark:text-foreground">Capacidade</TableHead>
             <TableHead className="dark:text-foreground">Bloqueado?</TableHead>
-            <TableHead className="dark:text-foreground">Tipo de Espaço</TableHead>
+            <TableHead className="dark:text-foreground">
+              Tipo de Espaço
+            </TableHead>
             {isAdmin && (
               <TableHead className="text-right dark:text-foreground">
                 Ações

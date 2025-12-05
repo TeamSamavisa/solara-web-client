@@ -105,7 +105,7 @@ const AvailabilityContent = ({
 
     if (isCurrentlyAvailable) {
       const scheduleTeacher = scheduleTeachersData?.content.find(
-        (st) => st.schedule_id === scheduleId
+        (st) => st.schedule_id === scheduleId,
       );
       if (scheduleTeacher) {
         setScheduleToDelete(scheduleTeacher.id);
@@ -198,7 +198,7 @@ const AvailabilityContent = ({
             {WEEKDAYS.map((day) => {
               const daySchedules = schedulesByWeekday[day.key] || [];
               const availableSchedules = daySchedules.filter((schedule) =>
-                teacherScheduleIds.has(schedule.id)
+                teacherScheduleIds.has(schedule.id),
               );
 
               if (!isEditMode && availableSchedules.length === 0) return null;
@@ -219,7 +219,9 @@ const AvailabilityContent = ({
                         return isEditMode ? (
                           <Button
                             key={schedule.id}
-                            onClick={() => handleToggleAvailability(schedule.id)}
+                            onClick={() =>
+                              handleToggleAvailability(schedule.id)
+                            }
                             disabled={isProcessing}
                             variant={isSelected ? 'default' : 'outline'}
                             className={`
@@ -262,7 +264,7 @@ const AvailabilityContent = ({
                             </span>
                           </div>
                         );
-                      }
+                      },
                     )}
                   </div>
                 </div>

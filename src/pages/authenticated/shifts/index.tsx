@@ -36,7 +36,11 @@ import type { ShiftQuery } from '@/interfaces/shift/shift-query';
 import { useShifts } from '@/hooks/queries/useShifts';
 import type { CreateShift } from '@/interfaces/shift/create-shift';
 import type { Shift } from '@/interfaces/shift';
-import { useCreateShift, useDeleteShift, useUpdateShift } from '@/hooks/mutations/mutationShifts';
+import {
+  useCreateShift,
+  useDeleteShift,
+  useUpdateShift,
+} from '@/hooks/mutations/mutationShifts';
 import type { UpdateShift } from '@/interfaces/shift/update-shift';
 import { ShiftFilters } from '@/components/shifts/ShiftFilters';
 import { ShiftList } from '@/components/shifts/ShiftsList';

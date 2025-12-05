@@ -57,7 +57,9 @@ export const SubjectList: React.FC<SubjectsListProps> = ({
         <TableHeader>
           <TableRow className="dark:border-border hover:bg-muted/50 dark:hover:bg-muted/20">
             <TableHead className="dark:text-foreground">Nome</TableHead>
-            <TableHead className="dark:text-foreground">Tipo de Espaço</TableHead>
+            <TableHead className="dark:text-foreground">
+              Tipo de Espaço
+            </TableHead>
             <TableHead className="dark:text-foreground">Curso</TableHead>
             {isAdmin && (
               <TableHead className="text-right dark:text-foreground">
@@ -100,14 +102,12 @@ export const SubjectList: React.FC<SubjectsListProps> = ({
                     )}
                 </TableCell>
                 <TableCell className="dark:text-foreground">
-                  {getField(subject, 'course.name') ||
-                    subject.course?.name || (
-                      <span className="text-gray-400 dark:text-muted-foreground italic">
-                        Não definida
-                      </span>
-                    )}
+                  {getField(subject, 'course.name') || subject.course?.name || (
+                    <span className="text-gray-400 dark:text-muted-foreground italic">
+                      Não definida
+                    </span>
+                  )}
                 </TableCell>
-
 
                 {isAdmin && (
                   <TableCell className="text-right">

@@ -20,7 +20,7 @@ interface SubjectFormProps {
     course_id: number | null;
     required_space_type_id: number | null;
   };
-  courses: Course[]
+  courses: Course[];
   space_types: SpaceType[];
   onSubmit: (e: React.FormEvent) => void;
   onSelectChange: (name: string, value: string) => void;
@@ -65,7 +65,9 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({
         <Label htmlFor="required_space_type_id">Tipo de Espaço *</Label>
         <Select
           value={formData.required_space_type_id?.toString() || ''}
-          onValueChange={(value) => onSelectChange('required_space_type_id', value)}
+          onValueChange={(value) =>
+            onSelectChange('required_space_type_id', value)
+          }
           disabled={isLoading}
         >
           <SelectTrigger>

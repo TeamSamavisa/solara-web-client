@@ -36,7 +36,11 @@ import type { CreateCourseType } from '@/interfaces/course-type/create-course-ty
 import type { CourseType } from '@/interfaces/course-type';
 import type { CourseTypeQuery } from '@/interfaces/course-type/course-type-query';
 import { useCourseTypes } from '@/hooks/queries/useCourseTypes';
-import { useCreateCourseType, useDeleteCourseType, useUpdateCourseType } from '@/hooks/mutations/mutationCourseTypes';
+import {
+  useCreateCourseType,
+  useDeleteCourseType,
+  useUpdateCourseType,
+} from '@/hooks/mutations/mutationCourseTypes';
 import type { UpdateCourseType } from '@/interfaces/course-type/update-course-type';
 import { CourseTypeFilters } from '@/components/course-types/CourseTypeFilters';
 import { CourseTypesList } from '@/components/course-types/CourseTypesList';
@@ -53,7 +57,8 @@ const CourseTypes = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedCourseType, setSelectedCourseType] = useState<CourseType | null>(null);
+  const [selectedCourseType, setSelectedCourseType] =
+    useState<CourseType | null>(null);
   const [formData, setFormData] = useState<CreateCourseType>(INITIAL_FORM_DATA);
 
   // Filters and pagination
@@ -63,7 +68,8 @@ const CourseTypes = () => {
   });
 
   // Debounce for filters
-  const [debouncedFilters, setDebouncedFilters] = useState<CourseTypeQuery>(filters);
+  const [debouncedFilters, setDebouncedFilters] =
+    useState<CourseTypeQuery>(filters);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -244,7 +250,9 @@ const CourseTypes = () => {
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
               <DialogTitle className="dark:text-foreground">
-                {isEditMode ? 'Editar Tipo de Curso' : 'Adicionar Tipo de Curso'}
+                {isEditMode
+                  ? 'Editar Tipo de Curso'
+                  : 'Adicionar Tipo de Curso'}
               </DialogTitle>
               <DialogDescription className="dark:text-muted-foreground">
                 {isEditMode
@@ -266,7 +274,9 @@ const CourseTypes = () => {
           <DrawerContent>
             <DrawerHeader className="text-left">
               <DrawerTitle className="dark:text-foreground">
-                {isEditMode ? 'Editar Tipo de Curso' : 'Adicionar Tipo de Curso'}
+                {isEditMode
+                  ? 'Editar Tipo de Curso'
+                  : 'Adicionar Tipo de Curso'}
               </DrawerTitle>
               <DrawerDescription className="dark:text-muted-foreground">
                 {isEditMode

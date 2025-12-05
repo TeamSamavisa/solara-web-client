@@ -60,7 +60,8 @@ const Teachers = () => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isAvailabilityDialogOpen, setIsAvailabilityDialogOpen] = useState(false);
+  const [isAvailabilityDialogOpen, setIsAvailabilityDialogOpen] =
+    useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState<User | null>(null);
   const [formData, setFormData] = useState<CreateUser>(INITIAL_FORM_DATA);

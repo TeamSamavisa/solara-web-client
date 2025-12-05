@@ -67,9 +67,7 @@ const Availability = () => {
   // Get teacher's current availability
   const teacherScheduleIds = useMemo(() => {
     if (!scheduleTeachersData?.content) return new Set<number>();
-    return new Set(
-      scheduleTeachersData.content.map((st) => st.schedule_id)
-    );
+    return new Set(scheduleTeachersData.content.map((st) => st.schedule_id));
   }, [scheduleTeachersData]);
 
   const handleToggleAvailability = async (scheduleId: number) => {
@@ -80,7 +78,7 @@ const Availability = () => {
     if (isCurrentlyAvailable) {
       // Find the schedule_teacher record to delete
       const scheduleTeacher = scheduleTeachersData?.content.find(
-        (st) => st.schedule_id === scheduleId
+        (st) => st.schedule_id === scheduleId,
       );
       if (scheduleTeacher) {
         setScheduleToDelete(scheduleTeacher.id);
@@ -142,7 +140,8 @@ const Availability = () => {
                     Selecione seus horários disponíveis
                   </h2>
                   <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                    Clique nos horários em que você está disponível para dar aulas
+                    Clique nos horários em que você está disponível para dar
+                    aulas
                   </p>
                 </div>
                 <div className="text-sm text-gray-700 dark:text-gray-300">
@@ -179,7 +178,8 @@ const Availability = () => {
               Remover disponibilidade
             </AlertDialogTitle>
             <AlertDialogDescription className="dark:text-muted-foreground">
-              Tem certeza que deseja remover este horário da sua disponibilidade?
+              Tem certeza que deseja remover este horário da sua
+              disponibilidade?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

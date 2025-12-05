@@ -36,7 +36,11 @@ import type { CreateSubject } from '@/interfaces/subject/create-subject';
 import type { Subject } from '@/interfaces/subject';
 import type { SubjectQuery } from '@/interfaces/subject/subject-query';
 import { useSubjects } from '@/hooks/queries/useSubjects';
-import { useCreateSubject, useDeleteSubject, useUpdateSubject } from '@/hooks/mutations/mutationSubjects';
+import {
+  useCreateSubject,
+  useDeleteSubject,
+  useUpdateSubject,
+} from '@/hooks/mutations/mutationSubjects';
 import type { UpdateSubject } from '@/interfaces/subject/update-subject';
 import { SubjectFilters } from '@/components/subjects/SubjectFilters';
 import { SubjectList } from '@/components/subjects/SubjectsList';
@@ -67,7 +71,8 @@ const Subjects = () => {
   });
 
   // Debounce for filters
-  const [debouncedFilters, setDebouncedFilters] = useState<SubjectQuery>(filters);
+  const [debouncedFilters, setDebouncedFilters] =
+    useState<SubjectQuery>(filters);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -87,7 +92,6 @@ const Subjects = () => {
 
   const handleFilterChange = (name: string, value: string) => {
     setFilters((prev) => {
-
       if (value === '' || value === '0') {
         const newFilters = { ...prev };
         delete newFilters[name as keyof SubjectQuery];
@@ -197,7 +201,7 @@ const Subjects = () => {
           id: selectedSubject.id,
           name: formData.name,
           course_id: Number(formData.course_id),
-          required_space_type_id: Number(formData.required_space_type_id)
+          required_space_type_id: Number(formData.required_space_type_id),
         };
 
         await updateSubjectMutation.mutateAsync(updateData);
@@ -205,7 +209,7 @@ const Subjects = () => {
         const createData: CreateSubject = {
           name: formData.name,
           course_id: Number(formData.course_id),
-          required_space_type_id: Number(formData.required_space_type_id)
+          required_space_type_id: Number(formData.required_space_type_id),
         };
 
         await createSubjectMutation.mutateAsync(createData);

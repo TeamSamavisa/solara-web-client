@@ -93,7 +93,9 @@ export const SpaceForm: React.FC<SpaceFormProps> = ({
       <div className="grid gap-2">
         <Label htmlFor="blocked">Bloqueado? *</Label>
         <Select
-          value={formData.blocked === null ? '' : (formData.blocked ? 'true' : 'false')}
+          value={
+            formData.blocked === null ? '' : formData.blocked ? 'true' : 'false'
+          }
           onValueChange={(value) => onSelectChange('blocked', value)}
         >
           <SelectTrigger>

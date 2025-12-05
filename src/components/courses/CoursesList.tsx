@@ -57,7 +57,9 @@ export const CoursesList: React.FC<CoursesListProps> = ({
         <TableHeader>
           <TableRow className="dark:border-border hover:bg-muted/50 dark:hover:bg-muted/20">
             <TableHead className="dark:text-foreground">Nome</TableHead>
-            <TableHead className="dark:text-foreground">Tipo de Curso</TableHead>
+            <TableHead className="dark:text-foreground">
+              Tipo de Curso
+            </TableHead>
             {isAdmin && (
               <TableHead className="text-right dark:text-foreground">
                 Ações

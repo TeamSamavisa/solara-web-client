@@ -36,7 +36,11 @@ import type { CreateSchedule } from '@/interfaces/schedule/create-schedule';
 import type { Schedule } from '@/interfaces/schedule';
 import type { ScheduleQuery } from '@/interfaces/schedule/schedule-query';
 import { useSchedules } from '@/hooks/queries/useSchedules';
-import { useCreateSchedule, useDeleteSchedule, useUpdateSchedule } from '@/hooks/mutations/mutationSchedules';
+import {
+  useCreateSchedule,
+  useDeleteSchedule,
+  useUpdateSchedule,
+} from '@/hooks/mutations/mutationSchedules';
 import type { UpdateSchedule } from '@/interfaces/schedule/update-schedule';
 import { SchedulesFilters } from '@/components/schedules/ScheduleFilters';
 import { ScheduleList } from '@/components/schedules/SchedulesList';
@@ -47,6 +51,7 @@ const INITIAL_FORM_DATA: CreateSchedule = {
   weekday: '',
   start_time: '',
   end_time: '',
+  shift_id: 0,
 };
 
 const Schedules = () => {
@@ -55,7 +60,9 @@ const Schedules = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
+  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
+    null,
+  );
   const [formData, setFormData] = useState<CreateSchedule>(INITIAL_FORM_DATA);
 
   // Filters and pagination
@@ -65,7 +72,8 @@ const Schedules = () => {
   });
 
   // Debounce for filters
-  const [debouncedFilters, setDebouncedFilters] = useState<ScheduleQuery>(filters);
+  const [debouncedFilters, setDebouncedFilters] =
+    useState<ScheduleQuery>(filters);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -116,7 +124,8 @@ const Schedules = () => {
     setFormData({
       weekday: schedule.weekday,
       start_time: schedule.start_time,
-      end_time: schedule.end_time
+      end_time: schedule.end_time,
+      shift_id: schedule.shift_id,
     });
     setIsDialogOpen(true);
   };
@@ -157,7 +166,12 @@ const Schedules = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.weekday.trim() || !formData.start_time.trim() || !formData.end_time.trim()) {
+    if (
+      !formData.weekday.trim() ||
+      !formData.start_time.trim() ||
+      !formData.end_time.trim() ||
+      !formData.shift_id
+    ) {
       toast.error('Erro', {
         description: 'Todos os campos são obrigatórios',
       });
@@ -171,6 +185,7 @@ const Schedules = () => {
           weekday: formData.weekday,
           start_time: formData.start_time,
           end_time: formData.end_time,
+          shift_id: Number(formData.shift_id),
         };
 
         await updateScheduleMutation.mutateAsync(updateData);
@@ -179,6 +194,7 @@ const Schedules = () => {
           weekday: formData.weekday,
           start_time: formData.start_time,
           end_time: formData.end_time,
+          shift_id: Number(formData.shift_id),
         };
 
         await createScheduleMutation.mutateAsync(createData);
@@ -327,7 +343,8 @@ const Schedules = () => {
             <AlertDialogDescription className="dark:text-muted-foreground">
               Tem certeza que deseja excluir o espaço{' '}
               <span className="font-semibold dark:text-foreground">
-                {selectedSchedule?.weekday} {selectedSchedule?.start_time} {selectedSchedule?.end_time}
+                {selectedSchedule?.weekday} {selectedSchedule?.start_time}{' '}
+                {selectedSchedule?.end_time}
               </span>
               ? Esta ação não pode ser desfeita.
             </AlertDialogDescription>

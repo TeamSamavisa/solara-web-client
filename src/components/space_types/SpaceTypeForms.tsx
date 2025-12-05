@@ -42,7 +42,7 @@ export const SpaceTypeForm: React.FC<SpaceTypeFormProps> = ({
           className="dark:bg-input dark:border-border dark:text-foreground dark:placeholder:text-muted-foreground"
         />
       </div>
-  
+
       <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 mt-2">
         <Button
           type="submit"

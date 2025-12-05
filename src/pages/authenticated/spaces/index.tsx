@@ -36,7 +36,11 @@ import type { CreateSpace } from '@/interfaces/space/create-space';
 import type { Space } from '@/interfaces/space';
 import type { SpaceQuery } from '@/interfaces/space/space-query';
 import { useSpaces } from '@/hooks/queries/useSpaces';
-import { useCreateSpace, useDeleteSpace, useUpdateSpace } from '@/hooks/mutations/mutationSpaces';
+import {
+  useCreateSpace,
+  useDeleteSpace,
+  useUpdateSpace,
+} from '@/hooks/mutations/mutationSpaces';
 import type { UpdateSpace } from '@/interfaces/space/update-space';
 import { SpaceFilters } from '@/components/spaces/SpaceFilters';
 import { SpaceList } from '@/components/spaces/SpacesList';
@@ -87,7 +91,6 @@ const Spaces = () => {
 
   const handleFilterChange = (name: string, value: string) => {
     setFilters((prev) => {
-
       if (value === '' || value === '0') {
         const newFilters = { ...prev };
         delete newFilters[name as keyof SpaceQuery];
@@ -96,9 +99,7 @@ const Spaces = () => {
 
       return {
         ...prev,
-        [name]: (name === 'floor')
-          ? Number(value)
-          : value,
+        [name]: name === 'floor' ? Number(value) : value,
         page: 1,
       };
     });
@@ -217,7 +218,7 @@ const Spaces = () => {
           floor: Number(formData.floor),
           capacity: Number(formData.capacity),
           blocked: Boolean(formData.blocked),
-          space_type_id: Number(formData.space_type_id)
+          space_type_id: Number(formData.space_type_id),
         };
 
         await updateSpaceMutation.mutateAsync(updateData);
@@ -227,7 +228,7 @@ const Spaces = () => {
           floor: Number(formData.floor),
           capacity: Number(formData.capacity),
           blocked: Boolean(formData.blocked),
-          space_type_id: Number(formData.space_type_id)
+          space_type_id: Number(formData.space_type_id),
         };
 
         await createSpaceMutation.mutateAsync(createData);

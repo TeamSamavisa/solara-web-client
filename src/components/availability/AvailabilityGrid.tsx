@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Check } from '@/assets/icons';
 import type { Schedule } from '@/interfaces/schedule';

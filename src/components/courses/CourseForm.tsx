@@ -69,7 +69,10 @@ export const CourseForm: React.FC<CourseFormProps> = ({
           </SelectTrigger>
           <SelectContent>
             {course_types.map((course_type) => (
-              <SelectItem key={course_type.id} value={course_type.id.toString()}>
+              <SelectItem
+                key={course_type.id}
+                value={course_type.id.toString()}
+              >
                 {course_type.name}
               </SelectItem>
             ))}

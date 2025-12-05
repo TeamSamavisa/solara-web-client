@@ -36,7 +36,11 @@ import type { SpaceQuery } from '@/interfaces/space/space-query';
 import { useSpaceTypes } from '@/hooks/queries/useSpaceTypes';
 import type { CreateSpaceType } from '@/interfaces/space-type/create-space-type';
 import type { SpaceType } from '@/interfaces/space-type';
-import { useCreateSpaceType, useDeleteSpaceType, useUpdateSpaceType } from '@/hooks/mutations/mutationSpaceTypes';
+import {
+  useCreateSpaceType,
+  useDeleteSpaceType,
+  useUpdateSpaceType,
+} from '@/hooks/mutations/mutationSpaceTypes';
 import type { UpdateSpaceType } from '@/interfaces/space-type/update-space-type';
 import { SpaceTypeFilters } from '@/components/space_types/SpaceTypeFilters';
 import { SpaceTypeList } from '@/components/space_types/SpaceTypesList';
@@ -53,7 +57,9 @@ const SpaceTypes = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedSpaceType, setSelectedSpaceType] = useState<SpaceType | null>(null);
+  const [selectedSpaceType, setSelectedSpaceType] = useState<SpaceType | null>(
+    null,
+  );
   const [formData, setFormData] = useState<CreateSpaceType>(INITIAL_FORM_DATA);
 
   // Filters and pagination
@@ -244,7 +250,9 @@ const SpaceTypes = () => {
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
               <DialogTitle className="dark:text-foreground">
-                {isEditMode ? 'Editar Tipo de Espaço' : 'Adicionar Tipo de Espaço'}
+                {isEditMode
+                  ? 'Editar Tipo de Espaço'
+                  : 'Adicionar Tipo de Espaço'}
               </DialogTitle>
               <DialogDescription className="dark:text-muted-foreground">
                 {isEditMode
@@ -266,7 +274,9 @@ const SpaceTypes = () => {
           <DrawerContent>
             <DrawerHeader className="text-left">
               <DrawerTitle className="dark:text-foreground">
-                {isEditMode ? 'Editar Tipo de Espaço' : 'Adicionar Tipo de Espaço'}
+                {isEditMode
+                  ? 'Editar Tipo de Espaço'
+                  : 'Adicionar Tipo de Espaço'}
               </DrawerTitle>
               <DrawerDescription className="dark:text-muted-foreground">
                 {isEditMode

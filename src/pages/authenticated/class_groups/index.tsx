@@ -37,7 +37,11 @@ import type { ClassGroup } from '@/interfaces/class-group';
 import type { ClassGroupQuery } from '@/interfaces/class-group/class-group-query';
 import { useShifts } from '@/hooks/queries/useShifts';
 import { useCourses } from '@/hooks/queries/useCourses';
-import { useCreateClassGroup, useDeleteClassGroup, useUpdateClassGroup } from '@/hooks/mutations/mutationClassGroups';
+import {
+  useCreateClassGroup,
+  useDeleteClassGroup,
+  useUpdateClassGroup,
+} from '@/hooks/mutations/mutationClassGroups';
 import type { UpdateClassGroup } from '@/interfaces/class-group/update-class-group';
 import { ClassGroupFilters } from '@/components/class_groups/ClassGroupFilters';
 import { ClassGroupList } from '@/components/class_groups/ClassGroupList';
@@ -60,7 +64,8 @@ const ClassGroups = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedClassGroup, setSelectedClassGroup] = useState<ClassGroup | null>(null);
+  const [selectedClassGroup, setSelectedClassGroup] =
+    useState<ClassGroup | null>(null);
   const [formData, setFormData] = useState<CreateClassGroup>(INITIAL_FORM_DATA);
 
   // Filters and pagination
@@ -70,7 +75,8 @@ const ClassGroups = () => {
   });
 
   // Debounce for filters
-  const [debouncedFilters, setDebouncedFilters] = useState<ClassGroupQuery>(filters);
+  const [debouncedFilters, setDebouncedFilters] =
+    useState<ClassGroupQuery>(filters);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -90,7 +96,6 @@ const ClassGroups = () => {
 
   const handleFilterChange = (name: string, value: string) => {
     setFilters((prev) => {
-
       if (value === '' || value === '0') {
         const newFilters = { ...prev };
         delete newFilters[name as keyof ClassGroupQuery];
@@ -99,9 +104,7 @@ const ClassGroups = () => {
 
       return {
         ...prev,
-        [name]: (name === 'student_count')
-          ? Number(value)
-          : value,
+        [name]: name === 'student_count' ? Number(value) : value,
         page: 1,
       };
     });
@@ -137,7 +140,7 @@ const ClassGroups = () => {
       module: class_group.module,
       student_count: class_group.student_count,
       shift_id: class_group.shift_id,
-      course_id: class_group.course_id
+      course_id: class_group.course_id,
     });
     setIsDialogOpen(true);
   };
@@ -213,7 +216,6 @@ const ClassGroups = () => {
       return;
     }
 
-
     if (formData.course_id === null) {
       toast.error('Erro', {
         description: 'O curso é obrigatório',
@@ -230,7 +232,7 @@ const ClassGroups = () => {
           module: formData.module,
           student_count: Number(formData.student_count),
           shift_id: Number(formData.shift_id),
-          course_id: Number(formData.course_id)
+          course_id: Number(formData.course_id),
         };
 
         await updateClassGroupMutation.mutateAsync(updateData);
@@ -241,7 +243,7 @@ const ClassGroups = () => {
           module: formData.module,
           student_count: Number(formData.student_count),
           shift_id: Number(formData.shift_id),
-          course_id: Number(formData.course_id)
+          course_id: Number(formData.course_id),
         };
 
         await createClassGroupMutation.mutateAsync(createData);
